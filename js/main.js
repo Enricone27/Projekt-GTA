@@ -42,7 +42,7 @@ function geoSuccess(position) {
     let lat = position.coords.latitude;
     let lng = position.coords.longitude;
     appState.latLng = L.latLng(lat, lng);
-    appState.radius = position.coords.accuracy / 2;
+    appState.radius = position.coords.accuracyA / 2;
     drawMarkers();
 
     if (map) {
@@ -96,4 +96,12 @@ function onload() {
     }).addTo(map);
 
     map.addLayer(appState.markers);
+    fetch('data/velovorzugsrouten.json')
+        .then(response => response.json())
+        .then(data => {
+            L.geoJSON(data).addTo(map);
+        })
+        .catch(error => {
+            console.error("Fehler beim Laden der GeoJSON-Datei:", error);
+        });
 }
