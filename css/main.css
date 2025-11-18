@@ -52,3 +52,123 @@ footer {
 .section p {
     text-align: justify;
 }
+/* =====================
+   Basis Button Style
+   ===================== */
+.infusr-pb-button {
+  margin: 10px; /* Abstand zwischen Buttons */
+  position: fixed;
+  bottom: 90px;
+  z-index: 998;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 140px;
+  height: 50px;
+  background: #00bcff;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0px 5px 11px -2px rgba(0,0,0,0.18),
+              0px 4px 12px -7px rgba(0,0,0,0.15);
+  transition: 0.2s;
+}
+
+.infusr-pb-button:hover {
+  box-shadow: 0 0 4px rgba(0,0,0,0.14),
+              0 4px 8px rgba(0,0,0,0.28);
+}
+
+/* Position der Buttons */
+#tripBtn {
+  left: 10px;
+}
+#rateBtn {
+  left: 160px; /* direkt daneben */
+}
+
+/* =====================
+   Popup Style
+   ===================== */
+.popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 10px;
+  width: 300px;
+  max-width: 90%; /* passt sich an mobile Geräte an */
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+/* Buttons innerhalb des Popups */
+.popup-content button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: #00bcff;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Fragen und Inputs */
+.question {
+  margin: 10px 0;
+  text-align: left;
+}
+.question label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}
+.question select,
+.question input[type="range"] {
+  width: 100%;
+}
+
+/* =====================
+   Responsive Media Queries
+   ===================== */
+@media (max-width: 480px) {
+  /* Buttons auf kleinen Geräten untereinander stapeln */
+  #tripBtn, #rateBtn {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: auto;
+  }
+  #tripBtn {
+    bottom: 110px;
+  }
+  #rateBtn {
+    bottom: 160px; /* oberhalb vom ersten Button */
+  }
+
+  /* Button-Größe etwas kleiner */
+  .infusr-pb-button {
+    width: 120px;
+    height: 45px;
+    font-size: 14px;
+  }
+
+  /* Popup Padding anpassen */
+  .popup-content {
+    padding: 15px 20px;
+  }
+}
