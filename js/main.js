@@ -91,4 +91,113 @@ function onload() {
         .catch(error => {
             console.error("Fehler beim Laden der GeoJSON-Datei:", error);
         });
+    map.addLayer(appState.markers);
+    fetch('data/stzh.poi_volksschule_view.json')
+        .then(response => response.json())
+        .then(data => {
+            L.geoJSON(data).addTo(map);
+        })
+        .catch(error => {
+            console.error("Fehler beim Laden der GeoJSON-Datei:", error);
+        });
+}
+let tripActive = false;
+
+/* Start/End Trip Button Logik */
+function toggleTrip() {
+  const btn = document.getElementById("tripBtn");
+
+  if (!tripActive) {
+    tripActive = true;
+    btn.textContent = "End Trip";
+  } else {
+    tripActive = false;
+    btn.textContent = "Start Trip";
+    document.getElementById("popupTrip").style.display = "flex";
+  }
+}
+
+/* Rate School Button */
+function openRatePopup() {
+  document.getElementById("popupRate").style.display = "flex";
+}
+
+/* Popup schließen */
+function closePopup(id) {
+  document.getElementById(id).style.display = "none";
+}
+
+function updateValue(spanId, val) {
+  document.getElementById(spanId).textContent = val;
+}
+
+function submitRating() {
+
+  const veloparkplatz = document.querySelector('input[name="veloparkplatz"]:checked')?.value;
+  const wettergeschuetzt = document.querySelector('input[name="Wettergeschuetzt"]:checked')?.value;
+  const anschliessen = document.querySelector('input[name="anschliessen"]:checked')?.value;
+  const durchfahren = document.querySelector('input[name="durchfahren"]:checked')?.value;
+
+  const weitWeg = document.getElementById("q5").value;
+  const vielePlaetze = document.getElementById("q6").value;
+
+  const rating = {
+    veloparkplatz,
+    wettergeschuetzt,
+    anschliessen,
+    durchfahren,
+    weitWeg,
+    vielePlaetze
+  };
+
+  console.log("Rating:", rating);
+  alert("Danke für deine Bewertung!");
+  closePopup("popupRate");
+}
+// Toggle Zusatzfrage Veloweg
+function toggleVelowegExtra(show) {
+  const extra = document.getElementById("velowegExtra");
+  if (show) {
+    extra.style.display = "block";
+  } else {
+    extra.style.display = "none";
+    // Auswahl zurücksetzen
+    const radios = extra.querySelectorAll('input[name="abgetrennt"]');
+    radios.forEach(r => r.checked = false);
+  }
+}
+
+// Slider-Wert live aktualisieren
+function updateValue(spanId, val) {
+  document.getElementById(spanId).textContent = val;
+}
+
+// Popup schließen
+function closePopup(id) {
+  document.getElementById(id).style.display = "none";
+}
+
+// Absenden und Werte auslesen
+function submitTripRating() {
+  const veloweg = document.querySelector('input[name="veloweg"]:checked')?.value || null;
+  
+  let abgetrennt = null;
+  if (veloweg === "ja") {
+    abgetrennt = document.querySelector('input[name="abgetrennt"]:checked')?.value || null;
+  }
+
+  const geschwindigkeit = document.querySelector('input[name="geschwindigkeit"]:checked')?.value || null;
+  const vieleAmpeln = document.getElementById("q5").value;
+
+  const rating = {
+    veloweg,
+    abgetrennt,
+    geschwindigkeit,
+    vieleAmpeln
+  };
+
+  console.log("Trip Rating:", rating);
+  alert("Danke für deine Bewertung!");
+
+  closePopup("popupTrip");
 }

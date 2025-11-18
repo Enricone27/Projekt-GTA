@@ -27,10 +27,120 @@
     <script src="js/main.js" defer></script>
 </head>
 <body onload="onload()">
-<header>GTA Map APIs</header>
+<header>GTA-Projekt Schulwege</header>
 <div class="content">
     <div id="map"></div>
 </div>
+
+<!-- Start / End Trip Button -->
+<a href="#" class="infusr-pb-button" id="tripBtn" onclick="toggleTrip()">Start Trip</a>
+
+<!-- Rate School Button -->
+<a href="#" class="infusr-pb-button" id="rateBtn" onclick="openRatePopup()">Rate School</a>
+
+<div id="popupTrip" class="popup">
+  <div class="popup-content">
+    <h2>Rate Trip</h2>
+    
+    <div class="question">
+      <label>Hat es einen Veloweg?</label>
+      <label>
+        <input type="radio" name="veloweg" value="ja" onclick="toggleVelowegExtra(true)"> Ja
+        <input type="radio" name="veloweg" value="nein" onclick="toggleVelowegExtra(false)"> Nein
+      </label>
+    </div>
+
+    <!-- Container für zusätzliche Option -->
+    <div class="question" id="velowegExtra" style="display:none; margin-left:20px;">
+      <label>Ist der Weg baulich abgetrennt?</label>
+      <label>
+        <input type="radio" name="abgetrennt" value="ja"> Ja
+        <input type="radio" name="abgetrennt" value="nein"> Nein
+      </label>
+    </div>
+    
+    <div class="question">
+      <label>Höchste Geschwindigkeitsbegrenzung</label>
+      <label>
+        <input type="radio" name="geschwindigkeit" value="20"> 20
+        <input type="radio" name="geschwindigkeit" value="30"> 30
+        <input type="radio" name="geschwindigkeit" value="50"> 50
+      </label>
+    </div>
+    
+    <div class="question">
+      <label>Viele Ampeln? (1: keine, 5: viele)</label>
+      <input type="range" min="1" max="5" value="3" id="q5" oninput="updateValue('Ampeln', this.value)">
+      <span id="Ampeln">3</span>
+    </div>
+
+    <!-- Buttons -->
+    <button onclick="submitTripRating()">Absenden</button>
+    <button onclick="closePopup('popupTrip')">Schließen</button>
+
+  </div>
+</div>
+
+
+<!-- Popup Rate School -->
+<div id="popupRate" class="popup">
+  <div class="popup-content">
+    <h2>Rate School</h2>
+
+    <!-- JA/NEIN Fragen -->
+<div class="question">
+  <label>Hat es einen Veloparkplatz?</label>
+  <label>
+    <input type="radio" name="veloparkplatz" value="ja"> Ja
+    <input type="radio" name="veloparkplatz" value="nein"> Nein
+  </label>
+</div>
+
+<div class="question">
+  <label>Ist dieser wettergeschützt?</label>
+  <label>
+    <input type="radio" name="Wettergeschuetzt" value="ja"> Ja
+    <input type="radio" name="Wettergeschuetzt" value="nein"> Nein
+  </label>
+</div>
+
+<div class="question">
+  <label>Kann man das Velo anschliessen?</label>
+  <label>
+    <input type="radio" name="anschliessen" value="ja"> Ja
+    <input type="radio" name="anschliessen" value="nein"> Nein
+  </label>
+</div>
+
+<div class="question">
+  <label>Kann man durchfahren zum Parkplatz?</label>
+  <label>
+    <input type="radio" name="durchfahren" value="ja"> Ja
+    <input type="radio" name="durchfahren" value="nein"> Nein
+  </label>
+</div>
+
+
+    <!-- SLIDER -->
+    <div class="question">
+      <label>Weit weg vom Schuleingang? (1–5)</label>
+      <input type="range" min="1" max="5" value="3" id="q5" oninput="updateValue('val5', this.value)">
+      <span id="val5">3</span>
+    </div>
+
+    <div class="question">
+      <label>Hat es viele Parkplätze? (1–5)</label>
+      <input type="range" min="1" max="5" value="3" id="q6" oninput="updateValue('val6', this.value)">
+      <span id="val6">3</span>
+    </div>
+
+    <button onclick="submitRating()">Absenden</button>
+    <button onclick="closePopup('popupRate')" style="margin-top:10px;">Schliessen</button>
+
+  </div>
+</div>
+
+
 <footer>
     <div>
         &copy; Ihrname<br>
