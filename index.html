@@ -1,151 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="Schulwege" content="GTA-Projekt für Velo-Schulwege">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="Schulwege" content="GTA-Projekt für Velo-Schulwege" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>GTA-Projekt Schulwege</title>
 
     <!-- With "link rel stylesheet", you can import CSS files. -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossorigin="" />
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Source+Sans+3&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Source+Sans+3&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- With script tags you can import JavaScript files. Defer makes sure that the browser does not wait until
          the script is completely loaded, but instead executes it once the HTML is downloaded and parsed. -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-            crossorigin="anonymous" defer></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin="" defer></script>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+      defer
+    ></script>
     <script src="js/main.js" defer></script>
-</head>
-<body onload="onload()">
-<header>GTA-Projekt Schulwege</header>
-<div class="content">
-    <div id="map"></div>
-</div>
-
-<!-- Start / End Trip Button -->
-<a href="#" class="infusr-pb-button" id="tripBtn" onclick="toggleTrip()">Start Trip</a>
-
-<!-- Rate School Button -->
-<a href="#" class="infusr-pb-button" id="rateBtn" onclick="openRatePopup()">Rate School</a>
-
-<div id="popupTrip" class="popup">
-  <div class="popup-content">
-    <h2>Rate Trip</h2>
-    
-    <div class="question">
-      <label>Hat es einen Veloweg?</label>
-      <label>
-        <input type="radio" name="veloweg" value="ja" onclick="toggleVelowegExtra(true)"> Ja
-        <input type="radio" name="veloweg" value="nein" onclick="toggleVelowegExtra(false)"> Nein
-      </label>
+  </head>
+  <body onload="onload()">
+    <header>GTA-Projekt Schulwege</header>
+    <div class="content">
+      <div id="map"></div>
     </div>
 
-    <!-- Container für zusätzliche Option -->
-    <div class="question" id="velowegExtra" style="display:none; margin-left:20px;">
-      <label>Ist der Weg baulich abgetrennt?</label>
-      <label>
-        <input type="radio" name="abgetrennt" value="ja"> Ja
-        <input type="radio" name="abgetrennt" value="nein"> Nein
-      </label>
-    </div>
-    
-    <div class="question">
-      <label>Höchste Geschwindigkeitsbegrenzung</label>
-      <label>
-        <input type="radio" name="geschwindigkeit" value="20"> 20
-        <input type="radio" name="geschwindigkeit" value="30"> 30
-        <input type="radio" name="geschwindigkeit" value="50"> 50
-      </label>
-    </div>
-    
-    <div class="question">
-      <label>Viele Ampeln? (1: keine, 5: viele)</label>
-      <input type="range" min="1" max="5" value="3" id="q5" oninput="updateValue('Ampeln', this.value)">
-      <span id="Ampeln">3</span>
-    </div>
+    <!-- Start / End Trip Button -->
+    <a href="#" class="infusr-pb-button" id="tripBtn" onclick="toggleTrip()"
+      >Start Trip</a
+    >
 
-    <!-- Buttons -->
-    <button onclick="submitTripRating()">Absenden</button>
-    <button onclick="closePopup('popupTrip')">Schließen</button>
+    <!-- Rate School Button -->
+    <a href="#" class="infusr-pb-button" id="rateBtn" onclick="openRatePopup()"
+      >Rate School</a
+    >
 
-  </div>
-</div>
+    <div id="popupTrip" class="popup">
+      <div class="popup-content">
+        <h2>Rate Trip</h2>
 
+        <div class="question">
+          <label>Hat es einen Veloweg?</label>
+          <label>
+            <input
+              type="radio"
+              name="veloweg"
+              value="ja"
+              onclick="toggleVelowegExtra(true)"
+            />
+            Ja
+            <input
+              type="radio"
+              name="veloweg"
+              value="nein"
+              onclick="toggleVelowegExtra(false)"
+            />
+            Nein
+          </label>
+        </div>
 
-<!-- Popup Rate School -->
-<div id="popupRate" class="popup">
-  <div class="popup-content">
-    <h2>Rate School</h2>
+        <!-- Container für zusätzliche Option -->
+        <div
+          class="question"
+          id="velowegExtra"
+          style="display: none; margin-left: 20px"
+        >
+          <label>Ist der Weg baulich abgetrennt?</label>
+          <label>
+            <input type="radio" name="abgetrennt" value="ja" /> Ja
+            <input type="radio" name="abgetrennt" value="nein" /> Nein
+          </label>
+        </div>
 
-    <!-- JA/NEIN Fragen -->
-<div class="question">
-  <label>Hat es einen Veloparkplatz?</label>
-  <label>
-    <input type="radio" name="veloparkplatz" value="ja"> Ja
-    <input type="radio" name="veloparkplatz" value="nein"> Nein
-  </label>
-</div>
+        <div class="question">
+          <label>Höchste Geschwindigkeitsbegrenzung</label>
+          <label>
+            <input type="radio" name="geschwindigkeit" value="20" /> 20
+            <input type="radio" name="geschwindigkeit" value="30" /> 30
+            <input type="radio" name="geschwindigkeit" value="50" /> 50
+          </label>
+        </div>
 
-<div class="question">
-  <label>Ist dieser wettergeschützt?</label>
-  <label>
-    <input type="radio" name="Wettergeschuetzt" value="ja"> Ja
-    <input type="radio" name="Wettergeschuetzt" value="nein"> Nein
-  </label>
-</div>
+        <div class="question">
+          <label>Viele Ampeln? (1: keine, 5: viele)</label>
+          <input
+            type="range"
+            min="1"
+            max="5"
+            value="3"
+            id="q5"
+            oninput="updateValue('Ampeln', this.value)"
+          />
+          <span id="Ampeln">3</span>
+        </div>
 
-<div class="question">
-  <label>Kann man das Velo anschliessen?</label>
-  <label>
-    <input type="radio" name="anschliessen" value="ja"> Ja
-    <input type="radio" name="anschliessen" value="nein"> Nein
-  </label>
-</div>
-
-<div class="question">
-  <label>Kann man durchfahren zum Parkplatz?</label>
-  <label>
-    <input type="radio" name="durchfahren" value="ja"> Ja
-    <input type="radio" name="durchfahren" value="nein"> Nein
-  </label>
-</div>
-
-
-    <!-- SLIDER -->
-    <div class="question">
-      <label>Weit weg vom Schuleingang? (1–5)</label>
-      <input type="range" min="1" max="5" value="3" id="q5" oninput="updateValue('val5', this.value)">
-      <span id="val5">3</span>
+        <!-- Buttons -->
+        <button onclick="submitTripRating()">Absenden</button>
+        <!--<button onclick="closePopup('popupTrip')">Schließen</button>-->
+      </div>
     </div>
 
-    <div class="question">
-      <label>Hat es viele Parkplätze? (1–5)</label>
-      <input type="range" min="1" max="5" value="3" id="q6" oninput="updateValue('val6', this.value)">
-      <span id="val6">3</span>
+    <!-- Popup Rate School -->
+    <div id="popupRate" class="popup">
+      <div class="popup-content">
+        <h2>Rate School</h2>
+
+        <!-- JA/NEIN Fragen -->
+        <div class="question">
+          <label>Hat es einen Veloparkplatz?</label>
+          <label>
+            <input type="radio" name="veloparkplatz" value="ja" /> Ja
+            <input type="radio" name="veloparkplatz" value="nein" /> Nein
+          </label>
+        </div>
+
+        <div class="question">
+          <label>Ist dieser wettergeschützt?</label>
+          <label>
+            <input type="radio" name="Wettergeschuetzt" value="ja" /> Ja
+            <input type="radio" name="Wettergeschuetzt" value="nein" /> Nein
+          </label>
+        </div>
+
+        <div class="question">
+          <label>Kann man das Velo anschliessen?</label>
+          <label>
+            <input type="radio" name="anschliessen" value="ja" /> Ja
+            <input type="radio" name="anschliessen" value="nein" /> Nein
+          </label>
+        </div>
+
+        <div class="question">
+          <label>Kann man durchfahren zum Parkplatz?</label>
+          <label>
+            <input type="radio" name="durchfahren" value="ja" /> Ja
+            <input type="radio" name="durchfahren" value="nein" /> Nein
+          </label>
+        </div>
+
+        <!-- SLIDER -->
+        <div class="question">
+          <label>Weit weg vom Schuleingang? (1–5)</label>
+          <input
+            type="range"
+            min="1"
+            max="5"
+            value="3"
+            id="q5"
+            oninput="updateValue('val5', this.value)"
+          />
+          <span id="val5">3</span>
+        </div>
+
+        <div class="question">
+          <label>Hat es viele Parkplätze? (1–5)</label>
+          <input
+            type="range"
+            min="1"
+            max="5"
+            value="3"
+            id="q6"
+            oninput="updateValue('val6', this.value)"
+          />
+          <span id="val6">3</span>
+        </div>
+
+        <button onclick="submitRating()">Absenden</button>
+        <button onclick="closePopup('popupRate')" style="margin-top: 10px">
+          Schliessen
+        </button>
+      </div>
     </div>
 
-    <button onclick="submitRating()">Absenden</button>
-    <button onclick="closePopup('popupRate')" style="margin-top:10px;">Schliessen</button>
-
-  </div>
-</div>
-
-
-<footer>
-    <div>
-        &copy; Ihrname<br>
+    <footer>
+      <div>
+        &copy; Ihrname<br />
         IKG @ ETH Zürich
-    </div>
-</footer>
-</body>
+      </div>
+    </footer>
+  </body>
 </html>

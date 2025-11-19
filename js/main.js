@@ -1,40 +1,123 @@
-let map;
-let appState = {
-    markers: null,
-    latLng: null,
-    radius: null,
-    heading: null
-};
+/**
+ * The onload function is called when the HTML has finished loading.
+ */
+function onload() {
+  loadMap();
+}
+/**
+ * loads the Map on the background
+ */
+function loadMap() {
+  map = L.map("map").setView([47.37675, 8.540721], 16);
+  markers = L.layerGroup();
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
+
+  map.addLayer(markers);
+  fetch("data/velovorzugsrouten.json")
+    .then((response) => response.json())
+    .then((data) => {
+      L.geoJSON(data).addTo(map);
+    })
+    .catch((error) => {
+      console.error("Fehler beim Laden der GeoJSON-Datei:", error);
+    });
+  map.addLayer(markers);
+  fetch("data/stzh.poi_volksschule_view.json")
+    .then((response) => response.json())
+    .then((data) => {
+      L.geoJSON(data).addTo(map);
+    })
+    .catch((error) => {
+      console.error("Fehler beim Laden der GeoJSON-Datei:", error);
+    });
+}
 
 /**
- * Draws the markers on the map.
+ * Alles was für die GPS Track Aufzeichnung notwendig ist.
+ * und anschliessend um den Track zu Bewerten und abschicken
+ *
  */
-function drawMarkers() {
-    if (map && appState.markers && appState.latLng && appState.radius) {
-        appState.markers.clearLayers();
-        let circle = L.circle(appState.latLng, {
-            radius: appState.radius
-        });
-        appState.markers.addLayer(circle);
+let tripActive = false;
+let watchID = null;
+let track_cords = [];
+let geoOptions = {
+  enableHighAccuracy: true,
+  /*
+  maximumAge: 15000, // The maximum age of a cached location (15 seconds).
+  timeout: 12000, // A maximum of 12 seconds before timeout.*/
+};
 
-        // Draw a line representing current heading    
-    }
+let trackState = {
+  track: null,
+  rating: null,
+};
+let track = {
+  coords: null,
+  start_time: null,
+  end_time: null,
+};
+
+/* Start/End Trip Button Logik */
+function toggleTrip() {
+  const btn = document.getElementById("tripBtn");
+
+  if (!tripActive) {
+    //START
+    tripActive = true;
+    btn.textContent = "End Trip";
+    // MECHANISMUS fÜR GPS AUFNEHMEN
+    start_tracking();
+  } else {
+    //STOP
+    tripActive = false;
+    btn.textContent = "Start Trip";
+    // GPS STOPPEN
+    stop_tracking();
+    // Objekt beschreiben
+    console.log(track_cords);
+    track.coords = track_cords;
+    trackState.track = track;
+    // Bewertung einleiten
+    document.getElementById("popupTrip").style.display = "flex";
+  }
+}
+
+function start_tracking() {
+  track_cords = [];
+  if ("geolocation" in navigator) {
+    track.start_time = new Date();
+    watchID = navigator.geolocation.watchPosition(
+      gettingCords,
+      geoError,
+      geoOptions
+    );
+    console.log(watchID, tripActive);
+  } else {
+    console.error("Geolocation nicht verfügbar");
+  }
+}
+
+function stop_tracking() {
+  if (watchID !== null) {
+    navigator.geolocation.clearWatch(watchID);
+    track.end_time = new Date();
+    console.log("Tracking gestoppt:", watchID);
+    watchID = null;
+  }
 }
 
 /**
  * Function to be called whenever a new position is available.
  * @param position The new position.
  */
-function geoSuccess(position) {
-    let lat = position.coords.latitude;
-    let lng = position.coords.longitude;
-    appState.latLng = L.latLng(lat, lng);
-    appState.radius = position.coords.accuracy / 2;
-    drawMarkers();
-
-    if (map) {
-        map.setView(appState.latLng);
-    }
+function gettingCords(position) {
+  let lat = position.coords.latitude;
+  let lng = position.coords.longitude;
+  num_cords = [lat, lng];
+  track_cords.push(num_cords);
 }
 
 /**
@@ -42,101 +125,60 @@ function geoSuccess(position) {
  * @param error Describing the error in more detail.
  */
 function geoError(error) {
-    let errMsg = $("#error-messages");
-    errMsg.text(errMsg.text() + "Fehler beim Abfragen der Position (" + error.code + "): " + error.message + " ");
-    errMsg.show();
+  console.log(
+    "Fehler beim Abfragen der Position (" +
+      error.code +
+      "): " +
+      error.message +
+      " "
+  );
 }
-
-let geoOptions = {
-    enableHighAccuracy: true,
-    maximumAge: 15000,  // The maximum age of a cached location (15 seconds).
-    timeout: 12000   // A maximum of 12 seconds before timeout.
-};
 
 /**
- * The onload function is called when the HTML has finished loading.
+ * Bewertungen von Tracks und POIs
  */
-function onload() {
-    let errMsg = $("#error-messages");
+function submitTripRating() {
+  const veloweg =
+    document.querySelector('input[name="veloweg"]:checked')?.value || null;
 
-    if ("geolocation" in navigator) {
-        navigator.geolocation.watchPosition(geoSuccess, geoError, geoOptions);
-    } else {
-        errMsg.text(errMsg.text() + "Geolocation is leider auf diesem Gerät nicht verfügbar. ");
-        errMsg.show();
-    }
-
-    if (window.DeviceOrientationEvent) {
-        window.addEventListener('deviceorientation', function (eventData) {
-            appState.heading = eventData.alpha * (Math.PI / 180);
-            drawMarkers();
-        }, false);
-    } else {
-        errMsg.text(errMsg.text() + "DeviceOrientation ist leider nicht verfügbar. ");
-        errMsg.show();
-    }
-
-    map = L.map('map').setView([47.376750, 8.540721], 16);
-    appState.markers = L.layerGroup();
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-
-    map.addLayer(appState.markers);
-    fetch('data/velovorzugsrouten.json')
-        .then(response => response.json())
-        .then(data => {
-            L.geoJSON(data).addTo(map);
-        })
-        .catch(error => {
-            console.error("Fehler beim Laden der GeoJSON-Datei:", error);
-        });
-    map.addLayer(appState.markers);
-    fetch('data/stzh.poi_volksschule_view.json')
-        .then(response => response.json())
-        .then(data => {
-            L.geoJSON(data).addTo(map);
-        })
-        .catch(error => {
-            console.error("Fehler beim Laden der GeoJSON-Datei:", error);
-        });
-}
-let tripActive = false;
-
-/* Start/End Trip Button Logik */
-function toggleTrip() {
-  const btn = document.getElementById("tripBtn");
-
-  if (!tripActive) {
-    tripActive = true;
-    btn.textContent = "End Trip";
-  } else {
-    tripActive = false;
-    btn.textContent = "Start Trip";
-    document.getElementById("popupTrip").style.display = "flex";
+  let abgetrennt = null;
+  if (veloweg === "ja") {
+    abgetrennt =
+      document.querySelector('input[name="abgetrennt"]:checked')?.value || null;
   }
-}
 
-/* Rate School Button */
-function openRatePopup() {
-  document.getElementById("popupRate").style.display = "flex";
-}
+  const geschwindigkeit =
+    document.querySelector('input[name="geschwindigkeit"]:checked')?.value ||
+    null;
+  const vieleAmpeln = document.getElementById("q5").value;
 
-/* Popup schließen */
-function closePopup(id) {
-  document.getElementById(id).style.display = "none";
-}
+  const rating = {
+    veloweg,
+    abgetrennt,
+    geschwindigkeit,
+    vieleAmpeln,
+  };
 
-function updateValue(spanId, val) {
-  document.getElementById(spanId).textContent = val;
+  console.log("Trip Rating:", rating);
+  trackState.rating = rating;
+  alert("Danke für deine Bewertung!");
+  console.log(trackState);
+  closePopup("popupTrip");
 }
 
 function submitRating() {
-
-  const veloparkplatz = document.querySelector('input[name="veloparkplatz"]:checked')?.value;
-  const wettergeschuetzt = document.querySelector('input[name="Wettergeschuetzt"]:checked')?.value;
-  const anschliessen = document.querySelector('input[name="anschliessen"]:checked')?.value;
-  const durchfahren = document.querySelector('input[name="durchfahren"]:checked')?.value;
+  const veloparkplatz = document.querySelector(
+    'input[name="veloparkplatz"]:checked'
+  )?.value;
+  const wettergeschuetzt = document.querySelector(
+    'input[name="Wettergeschuetzt"]:checked'
+  )?.value;
+  const anschliessen = document.querySelector(
+    'input[name="anschliessen"]:checked'
+  )?.value;
+  const durchfahren = document.querySelector(
+    'input[name="durchfahren"]:checked'
+  )?.value;
 
   const weitWeg = document.getElementById("q5").value;
   const vielePlaetze = document.getElementById("q6").value;
@@ -147,14 +189,28 @@ function submitRating() {
     anschliessen,
     durchfahren,
     weitWeg,
-    vielePlaetze
+    vielePlaetze,
   };
 
   console.log("Rating:", rating);
   alert("Danke für deine Bewertung!");
   closePopup("popupRate");
 }
-// Toggle Zusatzfrage Veloweg
+
+/**
+ * TODO:
+ * EXPORT TO DB
+ */
+
+/**
+ * UI Funktioen
+ */
+
+// Rate School Button  UI Funktion
+function openRatePopup() {
+  document.getElementById("popupRate").style.display = "flex";
+}
+// Toggle Zusatzfrage Veloweg UI Funktion
 function toggleVelowegExtra(show) {
   const extra = document.getElementById("velowegExtra");
   if (show) {
@@ -163,41 +219,14 @@ function toggleVelowegExtra(show) {
     extra.style.display = "none";
     // Auswahl zurücksetzen
     const radios = extra.querySelectorAll('input[name="abgetrennt"]');
-    radios.forEach(r => r.checked = false);
+    radios.forEach((r) => (r.checked = false));
   }
 }
-
-// Slider-Wert live aktualisieren
+// Slider-Wert live aktualisieren UI Funktion
 function updateValue(spanId, val) {
   document.getElementById(spanId).textContent = val;
 }
-
-// Popup schließen
+// Popup schließen UI Funktion
 function closePopup(id) {
   document.getElementById(id).style.display = "none";
-}
-
-// Absenden und Werte auslesen
-function submitTripRating() {
-  const veloweg = document.querySelector('input[name="veloweg"]:checked')?.value || null;
-  
-  let abgetrennt = null;
-  if (veloweg === "ja") {
-    abgetrennt = document.querySelector('input[name="abgetrennt"]:checked')?.value || null;
-  }
-
-  const geschwindigkeit = document.querySelector('input[name="geschwindigkeit"]:checked')?.value || null;
-  const vieleAmpeln = document.getElementById("q5").value;
-
-  const rating = {
-    veloweg,
-    abgetrennt,
-    geschwindigkeit,
-    vieleAmpeln
-  };
-
-  console.log("Trip Rating:", rating);
-  alert("Danke für deine Bewertung!");
-
-  closePopup("popupTrip");
 }
