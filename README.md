@@ -23,3 +23,11 @@ iu
 
 - Beim Bewerten cheggen ob im Schulradius drinn sind
   - Bewertungen mit name reinschreiben
+
+### html css korrektion
+
+- knopf trip record soll rot werden wenn es am recorden ist
+- einen einleitungsScreen mit fragezeichen knopf oben rechts
+- schule bewerten soll nur erscheinen wenn in nähe von einer Schule
+- 3 optionen beim bewerten popup: weiter tracken, bewerten, abbrechen
+- live Position soll angezeigt werden sowie aktuell am aufzeichnende Trajektorie soll live aktualisiert werden
