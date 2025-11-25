@@ -138,7 +138,7 @@ function geoError(error) {
  * Bewertungen von Tracks und POIs
  */
 function submitTripRating() {
-  const veloweg =
+  let veloweg =
     document.querySelector('input[name="veloweg"]:checked')?.value || null;
 
   let abgetrennt = null;
@@ -147,10 +147,12 @@ function submitTripRating() {
       document.querySelector('input[name="abgetrennt"]:checked')?.value || null;
   }
 
-  const geschwindigkeit =
+  let geschwindigkeit =
     document.querySelector('input[name="geschwindigkeit"]:checked')?.value ||
     null;
-  const vieleAmpeln = document.getElementById("q5").value;
+  let vieleAmpeln = document.getElementById("q5").value;
+  let strassentyp = null;
+  let verkehrsaufkommen = null;
 
   const rating = {
     veloweg,
@@ -164,7 +166,8 @@ function submitTripRating() {
   console.log("Trip Rating:", rating);
   trackState.rating = rating;
   alert("Danke für deine Bewertung!");
-  console.log(trackState); // hier gehts dann weiter mit auf die DB laden
+  console.log(trackState);
+  insertPoint(); // hier gehts dann weiter mit auf die DB laden
   closePopup("popupTrip");
 }
 
@@ -203,11 +206,13 @@ function submitRating() {
  * TODO:
  * EXPORT TO DB
  */
+let wfs = "https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_project/wfs";
 
 function insertPoint() {
   let coordString = trackState.track.coords
     .map((c) => c[0] + "," + c[1])
     .join(" ");
+  console.log(coordString);
   let postData =
     "<wfs:Transaction\n" +
     '  service="WFS"\n' +
@@ -223,35 +228,35 @@ function insertPoint() {
     '                      https://baug-ikg-gis-01.ethz.ch:8443/geoserver/schemas/wfs/1.0.0/WFS-basic.xsd">\n' +
     "  <wfs:Insert>\n" +
     "    <GTA25_project:trajektorien>\n" +
-    "      <zeit_start>" +
+    "      <GTA25_project:zeit_start>" +
     trackState.track.start_time +
-    "</zeit_start>\n" +
-    "      <zeit_ziel>" +
+    "</GTA25_project:zeit_start>\n" +
+    "      <GTA25_project:zeit_ziel>" +
     trackState.track.end_time +
-    "</zeit_ziel>\n" +
-    "      <strassentyp>" +
+    "</GTA25_project:zeit_ziel>\n" +
+    "      <GTA25_project:strassentyp>" +
     trackState.rating.strassentyp +
-    "</strassentyp>\n" +
-    "      <hoechstgeschwindigkeit>" +
+    "</GTA25_project:strassentyp>\n" +
+    "      <GTA25_project:hoechstgeschwindigkeit>" +
     trackState.rating.geschwindigkeit +
-    "</hoechstgeschwindigkeit>\n" +
-    "      <ampeln>" +
+    "</GTA25_project:hoechstgeschwindigkeit>\n" +
+    "      <GTA25_project:ampeln>" +
     trackState.rating.vieleAmpeln +
-    "</ampeln>\n" +
-    "      <verkehrsaufkommen>" +
+    "</GTA25_project:ampeln>\n" +
+    "      <GTA25_project:verkehrsaufkommen>" +
     trackState.rating.verkehrsaufkommen +
-    "</verkehrsaufkommen>\n" +
-    "      <gps>\n" +
+    "</GTA25_project:verkehrsaufkommen>\n" +
+    "      <GTA25_project:gps>\n" +
     '        <gml:LineString srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">\n' +
     '          <gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">' +
     coordString +
     "</gml:coordinates>\n" +
     "        </gml:LineString>\n" +
-    "      </gps>\n" +
+    "      </GTA25_project:gps>\n" +
     "    </GTA25_project:trajektorien>\n" +
     "  </wfs:Insert>\n" +
     "</wfs:Transaction>";
-
+  console.log("guguus");
   $.ajax({
     method: "POST",
     url: wfs,
