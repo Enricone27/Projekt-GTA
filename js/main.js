@@ -157,12 +157,14 @@ function submitTripRating() {
     abgetrennt,
     geschwindigkeit,
     vieleAmpeln,
+    strassentyp,
+    verkehrsaufkommen,
   };
 
   console.log("Trip Rating:", rating);
   trackState.rating = rating;
   alert("Danke für deine Bewertung!");
-  console.log(trackState);
+  console.log(trackState); // hier gehts dann weiter mit auf die DB laden
   closePopup("popupTrip");
 }
 
@@ -202,6 +204,75 @@ function submitRating() {
  * EXPORT TO DB
  */
 
+function insertPoint() {
+  let coordString = trackState.track.coords
+    .map((c) => c[0] + "," + c[1])
+    .join(" ");
+  let postData =
+    "<wfs:Transaction\n" +
+    '  service="WFS"\n' +
+    '  version="1.0.0"\n' +
+    '  xmlns="http://www.opengis.net/wfs"\n' +
+    '  xmlns:wfs="http://www.opengis.net/wfs"\n' +
+    '  xmlns:gml="http://www.opengis.net/gml"\n' +
+    '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n' +
+    '  xmlns:GTA25_project="https://www.gis.ethz.ch/GTA25_project"\n' +
+    '  xsi:schemaLocation="https://www.gis.ethz.ch/GTA25_project\n' +
+    "                      https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_project/wfs?service=WFS&amp;version=1.0.0&amp;request=DescribeFeatureType&amp;typeName=GTA25_project%3Atrajektorien\n" +
+    "                      http://www.opengis.net/wfs\n" +
+    '                      https://baug-ikg-gis-01.ethz.ch:8443/geoserver/schemas/wfs/1.0.0/WFS-basic.xsd">\n' +
+    "  <wfs:Insert>\n" +
+    "    <GTA25_project:trajektorien>\n" +
+    "      <zeit_start>" +
+    trackState.track.start_time +
+    "</zeit_start>\n" +
+    "      <zeit_ziel>" +
+    trackState.track.end_time +
+    "</zeit_ziel>\n" +
+    "      <strassentyp>" +
+    trackState.rating.strassentyp +
+    "</strassentyp>\n" +
+    "      <hoechstgeschwindigkeit>" +
+    trackState.rating.geschwindigkeit +
+    "</hoechstgeschwindigkeit>\n" +
+    "      <ampeln>" +
+    trackState.rating.vieleAmpeln +
+    "</ampeln>\n" +
+    "      <verkehrsaufkommen>" +
+    trackState.rating.verkehrsaufkommen +
+    "</verkehrsaufkommen>\n" +
+    "      <gps>\n" +
+    '        <gml:LineString srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">\n' +
+    '          <gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">' +
+    coordString +
+    "</gml:coordinates>\n" +
+    "        </gml:LineString>\n" +
+    "      </gps>\n" +
+    "    </GTA25_project:trajektorien>\n" +
+    "  </wfs:Insert>\n" +
+    "</wfs:Transaction>";
+
+  $.ajax({
+    method: "POST",
+    url: wfs,
+    dataType: "xml",
+    contentType: "text/xml",
+    data: postData,
+    success: function () {
+      //Success feedback
+      console.log("Success from AJAX, data sent to Geoserver");
+
+      // Do something to notisfy user
+      alert("Check if data is inserted into database");
+    },
+    error: function (xhr, errorThrown) {
+      //Error handling
+      console.log("Error from AJAX");
+      console.log(xhr.status);
+      console.log(errorThrown);
+    },
+  });
+}
 /**
  * UI Funktioen
  */
