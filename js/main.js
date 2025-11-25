@@ -89,6 +89,21 @@ function start_tracking() {
   track_cords = [];
   if ("geolocation" in navigator) {
     track.start_time = new Date();
+    dt =
+      track.start_time.getFullYear() +
+      "-" +
+      track.start_time.getMonth() +
+      "-" +
+      track.start_time.getDate() +
+      " " +
+      track.start_time.getHours() +
+      ":" +
+      track.start_time.getMinutes() +
+      ":" +
+      track.start_time.getSeconds();
+    console.log(dt);
+    track.start_time = dt;
+
     watchID = navigator.geolocation.watchPosition(
       gettingCords,
       geoError,
@@ -104,6 +119,22 @@ function stop_tracking() {
   if (watchID !== null) {
     navigator.geolocation.clearWatch(watchID);
     track.end_time = new Date();
+    dt =
+      track.end_time.getFullYear() +
+      "-" +
+      track.end_time.getMonth() +
+      "-" +
+      track.end_time.getDate() +
+      " " +
+      track.end_time.getHours() +
+      ":" +
+      track.end_time.getMinutes() +
+      ":" +
+      track.end_time.getSeconds();
+    console.log(dt);
+    track.end_time = dt;
+    //track.end_time = 1764079805089;
+    console.log(track.end_time);
     console.log("Tracking gestoppt:", watchID);
     watchID = null;
   }
@@ -141,7 +172,7 @@ function submitTripRating() {
   let veloweg =
     document.querySelector('input[name="veloweg"]:checked')?.value || null;
 
-  let abgetrennt = null;
+  let abgetrennt = 0;
   if (veloweg === "ja") {
     abgetrennt =
       document.querySelector('input[name="abgetrennt"]:checked')?.value || null;
@@ -151,8 +182,8 @@ function submitTripRating() {
     document.querySelector('input[name="geschwindigkeit"]:checked')?.value ||
     null;
   let vieleAmpeln = document.getElementById("q5").value;
-  let strassentyp = null;
-  let verkehrsaufkommen = null;
+  let strassentyp = 1;
+  let verkehrsaufkommen = 1;
 
   const rating = {
     veloweg,
@@ -223,37 +254,37 @@ function insertPoint() {
     '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n' +
     '  xmlns:GTA25_project="https://www.gis.ethz.ch/GTA25_project"\n' +
     '  xsi:schemaLocation="https://www.gis.ethz.ch/GTA25_project\n' +
-    "                      https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_project/wfs?service=WFS&amp;version=1.0.0&amp;request=DescribeFeatureType&amp;typeName=GTA25_project%3Atrajektorien\n" +
+    "                      https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_project/wfs?service=WFS&amp;version=1.0.0&amp;request=DescribeFeatureType&amp;typeName=GTA25_project%3Atrajektorien2\n" +
     "                      http://www.opengis.net/wfs\n" +
     '                      https://baug-ikg-gis-01.ethz.ch:8443/geoserver/schemas/wfs/1.0.0/WFS-basic.xsd">\n' +
     "  <wfs:Insert>\n" +
-    "    <GTA25_project:trajektorien>\n" +
-    "      <GTA25_project:zeit_start>" +
+    "    <GTA25_project:trajektorien2>\n" +
+    "      <zeit_start>" +
     trackState.track.start_time +
-    "</GTA25_project:zeit_start>\n" +
-    "      <GTA25_project:zeit_ziel>" +
+    "</zeit_start>\n" +
+    "      <zeit_ziel>" +
     trackState.track.end_time +
-    "</GTA25_project:zeit_ziel>\n" +
-    "      <GTA25_project:strassentyp>" +
+    "</zeit_ziel>\n" +
+    "      <strassentyp>" +
     trackState.rating.strassentyp +
-    "</GTA25_project:strassentyp>\n" +
-    "      <GTA25_project:hoechstgeschwindigkeit>" +
+    "</strassentyp>\n" +
+    "      <hoechstgeschwindigkeit>" +
     trackState.rating.geschwindigkeit +
-    "</GTA25_project:hoechstgeschwindigkeit>\n" +
-    "      <GTA25_project:ampeln>" +
+    "</hoechstgeschwindigkeit>\n" +
+    "      <ampeln>" +
     trackState.rating.vieleAmpeln +
-    "</GTA25_project:ampeln>\n" +
-    "      <GTA25_project:verkehrsaufkommen>" +
+    "</ampeln>\n" +
+    "      <verkehrsaufkommen>" +
     trackState.rating.verkehrsaufkommen +
-    "</GTA25_project:verkehrsaufkommen>\n" +
-    "      <GTA25_project:gps>\n" +
+    "</verkehrsaufkommen>\n" +
+    "      <gps>\n" +
     '        <gml:LineString srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">\n' +
     '          <gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">' +
     coordString +
     "</gml:coordinates>\n" +
     "        </gml:LineString>\n" +
-    "      </GTA25_project:gps>\n" +
-    "    </GTA25_project:trajektorien>\n" +
+    "      </gps>\n" +
+    "    </GTA25_project:trajektorien2>\n" +
     "  </wfs:Insert>\n" +
     "</wfs:Transaction>";
   console.log("guguus");
