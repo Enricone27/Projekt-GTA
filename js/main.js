@@ -88,21 +88,8 @@ function toggleTrip() {
 function start_tracking() {
   track_cords = [];
   if ("geolocation" in navigator) {
-    track.start_time = new Date();
-    dt =
-      track.start_time.getFullYear() +
-      "-" +
-      track.start_time.getMonth() +
-      "-" +
-      track.start_time.getDate() +
-      " " +
-      track.start_time.getHours() +
-      ":" +
-      track.start_time.getMinutes() +
-      ":" +
-      track.start_time.getSeconds();
-    console.log(dt);
-    track.start_time = dt;
+    track.start_time = new Date().toISOString();
+    console.log(track.start_time);
 
     watchID = navigator.geolocation.watchPosition(
       gettingCords,
@@ -118,22 +105,8 @@ function start_tracking() {
 function stop_tracking() {
   if (watchID !== null) {
     navigator.geolocation.clearWatch(watchID);
-    track.end_time = new Date();
-    dt =
-      track.end_time.getFullYear() +
-      "-" +
-      track.end_time.getMonth() +
-      "-" +
-      track.end_time.getDate() +
-      " " +
-      track.end_time.getHours() +
-      ":" +
-      track.end_time.getMinutes() +
-      ":" +
-      track.end_time.getSeconds();
-    console.log(dt);
-    track.end_time = dt;
-    //track.end_time = 1764079805089;
+
+    track.end_time = new Date().toISOString();
     console.log(track.end_time);
     console.log("Tracking gestoppt:", watchID);
     watchID = null;
@@ -182,7 +155,7 @@ function submitTripRating() {
     document.querySelector('input[name="geschwindigkeit"]:checked')?.value ||
     null;
   let vieleAmpeln = document.getElementById("q5").value;
-  let strassentyp = 1;
+  let strassentyp = "Hauptstrasse";
   let verkehrsaufkommen = 1;
 
   const rating = {
@@ -241,7 +214,7 @@ let wfs = "https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_project/wfs";
 
 function insertPoint() {
   let coordString = trackState.track.coords
-    .map((c) => c[0] + "," + c[1])
+    .map((c) => c[1] + "," + c[0])
     .join(" ");
   console.log(coordString);
   let postData =
@@ -254,11 +227,11 @@ function insertPoint() {
     '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n' +
     '  xmlns:GTA25_project="https://www.gis.ethz.ch/GTA25_project"\n' +
     '  xsi:schemaLocation="https://www.gis.ethz.ch/GTA25_project\n' +
-    "                      https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_project/wfs?service=WFS&amp;version=1.0.0&amp;request=DescribeFeatureType&amp;typeName=GTA25_project%3Atrajektorien2\n" +
+    "                      https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_project/wfs?service=WFS&amp;version=1.0.0&amp;request=DescribeFeatureType&amp;typeName=GTA25_project%3Atrajektorien99\n" +
     "                      http://www.opengis.net/wfs\n" +
     '                      https://baug-ikg-gis-01.ethz.ch:8443/geoserver/schemas/wfs/1.0.0/WFS-basic.xsd">\n' +
     "  <wfs:Insert>\n" +
-    "    <GTA25_project:trajektorien2>\n" +
+    "    <GTA25_project:trajektorien99>\n" +
     "      <zeit_start>" +
     trackState.track.start_time +
     "</zeit_start>\n" +
@@ -269,7 +242,7 @@ function insertPoint() {
     trackState.rating.strassentyp +
     "</strassentyp>\n" +
     "      <hoechstgeschwindigkeit>" +
-    trackState.rating.geschwindigkeit +
+    1 + //trackState.rating.geschwindigkeit +
     "</hoechstgeschwindigkeit>\n" +
     "      <ampeln>" +
     trackState.rating.vieleAmpeln +
@@ -284,7 +257,7 @@ function insertPoint() {
     "</gml:coordinates>\n" +
     "        </gml:LineString>\n" +
     "      </gps>\n" +
-    "    </GTA25_project:trajektorien2>\n" +
+    "    </GTA25_project:trajektorien99>\n" +
     "  </wfs:Insert>\n" +
     "</wfs:Transaction>";
   console.log("guguus");
