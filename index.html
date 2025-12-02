@@ -83,7 +83,7 @@
             min="1"
             max="5"
             value="3"
-            id="q8"
+            id="velostreifen"
             oninput="updateValue('abgetrennt', this.value)"
           />
           <span id="abgetrennt">3</span>
@@ -102,7 +102,7 @@
             min="1"
             max="5"
             value="3"
-            id="q5"
+            id="ampel"
             oninput="updateValue('Ampeln', this.value)"
           />
           <span id="Ampeln">3</span>
@@ -116,7 +116,7 @@
             min="1"
             max="5"
             value="3"
-            id="q6"
+            id="aufkommen"
             oninput="updateValue('Verkehrsaufkommen', this.value)"
           />
           <span id="Verkehrsaufkommen">3</span>
@@ -137,63 +137,69 @@
         <div class="question">
           <label>Hat es einen Veloparkplatz?</label>
           <label>
-            <input type="radio" name="veloparkplatz" value="ja" /> Ja
-            <input type="radio" name="veloparkplatz" value="nein" /> Nein
+            <input
+              type="radio"
+              name="veloparkplatz"
+              value="ja"
+              onclick="toggleVeloPP(true)"
+            />
+            Ja
+            <input
+              type="radio"
+              name="veloparkplatz"
+              value="nein"
+              onclick="toggleVeloPP(false)"
+            />
+            Nein
           </label>
         </div>
+        <div id="parkplatz" style="display: block">
+          <div class="question">
+            <label>Ist dieser wettergeschützt?</label>
+            <label>
+              <input type="radio" name="Wettergeschuetzt" value="ja" /> Ja
+              <input type="radio" name="Wettergeschuetzt" value="nein" /> Nein
+            </label>
+          </div>
 
-        <div class="question">
-          <label>Ist dieser wettergeschützt?</label>
-          <label>
-            <input type="radio" name="Wettergeschuetzt" value="ja" /> Ja
-            <input type="radio" name="Wettergeschuetzt" value="nein" /> Nein
-          </label>
+          <div class="question">
+            <label>Kann man das Velo anschliessen?</label>
+            <label>
+              <input type="radio" name="anschliessen" value="ja" /> Ja
+              <input type="radio" name="anschliessen" value="nein" /> Nein
+            </label>
+          </div>
+          <div class="question">
+            <label>Findest du den Parkplatz benutzerfreundlich?</label>
+            <input type="range" min="1" max="5" value="3" id="q7" />
+          </div>
+          <div class="question">
+            <label>Hat es viele Parkplätze?</label>
+            <input type="range" min="1" max="5" value="3" id="q6" />
+          </div>
+
+          <div class="question">
+            <label>Wie gut ist der Parkplatz von der Strasse erreichbar?</label>
+            <input type="range" min="1" max="5" value="3" id="q4" />
+          </div>
+
+          <!-- SLIDER -->
+          <div class="question">
+            <label
+              >Wie gut ist der Schuleingang vom Parkplatz erreichbar?</label
+            >
+            <input
+              type="range"
+              min="1"
+              max="5"
+              value="3"
+              id="q5"
+              oninput="updateValue('val5', this.value)"
+            />
+          </div>
         </div>
 
-        <div class="question">
-          <label>Kann man das Velo anschliessen?</label>
-          <label>
-            <input type="radio" name="anschliessen" value="ja" /> Ja
-            <input type="radio" name="anschliessen" value="nein" /> Nein
-          </label>
-        </div>
-
-        <div class="question">
-          <label>Kann man durchfahren zum Parkplatz?</label>
-          <label>
-            <input type="radio" name="durchfahren" value="ja" /> Ja
-            <input type="radio" name="durchfahren" value="nein" /> Nein
-          </label>
-        </div>
-
-        <!-- SLIDER -->
-        <div class="question">
-          <label>Weit weg vom Schuleingang? (1–5)</label>
-          <input
-            type="range"
-            min="1"
-            max="5"
-            value="3"
-            id="q5"
-            oninput="updateValue('val5', this.value)"
-          />
-          <span id="val5">3</span>
-        </div>
-
-        <div class="question">
-          <label>Hat es viele Parkplätze? (1–5)</label>
-          <input
-            type="range"
-            min="1"
-            max="5"
-            value="3"
-            id="q6"
-            oninput="updateValue('val6', this.value)"
-          />
-          <span id="val6">3</span>
-        </div>
-
-        <button onclick="submitRating()">Absenden</button>
+        <button onclick="startRating()">Absenden</button>
         <button onclick="closePopup('popupRate')" style="margin-top: 10px">
           Schliessen
         </button>

@@ -59,6 +59,14 @@ let track = {
   start_time: null,
   end_time: null,
 };
+let schoolState = {
+  pos: null,
+  rating: null,
+};
+let SchoolPos = {
+  coords: null,
+  rate_time: null,
+};
 
 /* Start/End Trip Button Logik */
 function toggleTrip() {
@@ -142,25 +150,20 @@ function geoError(error) {
  * Bewertungen von Tracks und POIs
  */
 function submitTripRating() {
-  let veloweg =
-    document.querySelector('input[name="veloweg"]:checked')?.value || null;
-
-  let abgetrennt = 0;
-  if (veloweg === "ja") {
-    abgetrennt =
-      document.querySelector('input[name="abgetrennt"]:checked')?.value || null;
-  }
-
   let geschwindigkeit =
     document.querySelector('input[name="geschwindigkeit"]:checked')?.value ||
     null;
-  let vieleAmpeln = document.getElementById("q5").value;
-  let strassentyp = "Hauptstrasse";
-  let verkehrsaufkommen = 1;
+  let strassentyp =
+    document.querySelector('input[name="strassetyp"]:checked')?.value || null;
+
+  let vieleAmpeln = document.getElementById("ampel").value;
+
+  let verkehrsaufkommen = document.getElementById("aufkommen").value;
+
+  let veloweg = document.getElementById("aufkommen").value;
 
   const rating = {
     veloweg,
-    abgetrennt,
     geschwindigkeit,
     vieleAmpeln,
     strassentyp,
@@ -169,28 +172,43 @@ function submitTripRating() {
 
   console.log("Trip Rating:", rating);
   trackState.rating = rating;
-  alert("Danke für deine Bewertung!");
   console.log(trackState);
   insertPoint(); // hier gehts dann weiter mit auf die DB laden
   closePopup("popupTrip");
 }
 
-function submitRating() {
-  const veloparkplatz = document.querySelector(
+function startRating() {
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      gettingSchoolRating,
+      geoError,
+      geoOptions
+    );
+  } else {
+    console.error("Geolocation nicht verfügbar");
+  }
+}
+
+function gettingSchoolRating(position) {
+  let lat = position.coords.latitude;
+  let lng = position.coords.longitude;
+  let coords = [lat, lng];
+  let veloparkplatz = document.querySelector(
     'input[name="veloparkplatz"]:checked'
   )?.value;
-  const wettergeschuetzt = document.querySelector(
+  let wettergeschuetzt = document.querySelector(
     'input[name="Wettergeschuetzt"]:checked'
   )?.value;
-  const anschliessen = document.querySelector(
+  let anschliessen = document.querySelector(
     'input[name="anschliessen"]:checked'
   )?.value;
-  const durchfahren = document.querySelector(
+  let durchfahren = document.querySelector(
     'input[name="durchfahren"]:checked'
   )?.value;
 
-  const weitWeg = document.getElementById("q5").value;
-  const vielePlaetze = document.getElementById("q6").value;
+  let weitWeg = document.getElementById("q5").value;
+  let vielePlaetze = document.getElementById("q6").value;
+  let rate_time = new Date().toISOString();
 
   const rating = {
     veloparkplatz,
@@ -201,9 +219,15 @@ function submitRating() {
     vielePlaetze,
   };
 
-  console.log("Rating:", rating);
+  console.log("Rating:", rating, coords);
+  SchoolPos.coords = coords;
+  SchoolPos.rate_time = rate_time;
+  schoolState.pos = SchoolPos;
+  schoolState.rating = rating;
   alert("Danke für deine Bewertung!");
+  console.log(schoolState);
   closePopup("popupRate");
+  insertRating();
 }
 
 /**
@@ -282,6 +306,8 @@ function insertPoint() {
     },
   });
 }
+
+function insertRating() {}
 /**
  * UI Funktioen
  */
@@ -291,8 +317,8 @@ function openRatePopup() {
   document.getElementById("popupRate").style.display = "flex";
 }
 // Toggle Zusatzfrage Veloweg UI Funktion
-function toggleVelowegExtra(show) {
-  const extra = document.getElementById("velowegExtra");
+function toggleVeloPP(show) {
+  const extra = document.getElementById("parkplatz");
   if (show) {
     extra.style.display = "block";
   } else {
