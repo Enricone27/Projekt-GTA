@@ -67,13 +67,15 @@ function toggleTrip() {
   if (!tripActive) {
     //START
     tripActive = true;
-    btn.textContent = "End Trip";
+    btn.textContent = "Beenden";
+    btn.style.backgroundColor = 'red';
     // MECHANISMUS fÜR GPS AUFNEHMEN
     start_tracking();
   } else {
     //STOP
     tripActive = false;
     btn.textContent = "Start Trip";
+    btn.style.backgroundColor = '#00bcff';
     // GPS STOPPEN
     stop_tracking();
     // Objekt beschreiben
@@ -225,6 +227,29 @@ function toggleVelowegExtra(show) {
 // Slider-Wert live aktualisieren UI Funktion
 function updateValue(spanId, val) {
   document.getElementById(spanId).textContent = val;
+}
+// Weiter tracken
+function continueTracking() {
+  document.getElementById("popupTrip").style.display = "none";
+  // Trip bleibt aktiv
+  console.log("Tracking wird fortgesetzt.");
+}
+
+// Popup abbrechen (ohne Bewertung, ohne Tracking)
+function cancelTripPopup() {
+  document.getElementById("popupTrip").style.display = "none";
+  console.log("Trip-Bewertung abgebrochen.");
+}
+
+// Funktion, um das Einleitungspopup ein- oder auszublenden
+function toggleIntroPopup() {
+  const popup = document.getElementById("introPopup");
+  popup.style.display = popup.style.display === "flex" ? "none" : "flex";
+}
+
+// Funktion, um das Einleitungspopup zu schließen
+function closeIntroPopup() {
+  document.getElementById("introPopup").style.display = "none";
 }
 // Popup schließen UI Funktion
 function closePopup(id) {

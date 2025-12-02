@@ -44,14 +44,47 @@
       <div id="map"></div>
     </div>
 
+    <!-- Fragezeichen Button oben rechts -->
+    <button id="infoBtn" class="info-btn" onclick="toggleIntroPopup()">?</button>
+
+    <!-- Einleitungspopup -->
+    <div id="introPopup" class="intro-popup">
+      <div class="intro-popup-content">
+        <h1>Wie funktioniert die App?</h1>
+        <p>Willkommen! Diese App zeichnet Routen auf und hilft Schulwege und Veloinfrastruktur zu bewerten</p>
+        <ul>
+          <li><strong>Start Trip:</strong> Beginne eine neue Reise.</li>
+          <li><strong>End Trip:</strong> Beende die aktuelle Reise und bewerte den Verlauf.</li>
+          <li><strong>Rate School:</strong> Bewerte die Einrichtungen der Schule für Velofahrer*innen.</li>
+        </ul>
+        <h3>Legende</h3>
+        <div class="legend-box">
+
+          <!-- Schulstandort -->
+          <div class="legend-item">
+            <img src="https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png" class="legend-icon">
+            <span>Schulstandort</span>
+          </div>
+
+          <!-- Velovorzugsroute -->
+          <div class="legend-item">
+            <div class="legend-line"></div>
+            <span>Velovorzugsroute</span>
+          </div>
+
+        </div>
+        <button onclick="closeIntroPopup()">Schließen</button>
+      </div>
+    </div>
+
     <!-- Start / End Trip Button -->
     <a href="#" class="infusr-pb-button" id="tripBtn" onclick="toggleTrip()"
-      >Start Trip</a
+      >Aufzeichnen</a
     >
 
     <!-- Rate School Button -->
     <a href="#" class="infusr-pb-button" id="rateBtn" onclick="openRatePopup()"
-      >Rate School</a
+      >Schule Bewerten</a
     >
 
     <div id="popupTrip" class="popup">
@@ -122,9 +155,11 @@
           <span id="Verkehrsaufkommen">3</span>
         </div>
 
-        <!-- Buttons -->
-        <button onclick="submitTripRating()">Absenden</button>
-        <!--<button onclick="closePopup('popupTrip')">Schließen</button>-->
+        <div class="trip-buttons">
+          <button onclick="continueTracking()" class="btn-gray">Weiter tracken</button>
+          <button onclick="submitTripRating()" class="btn-blue">Bewerten</button>
+          <button onclick="cancelTripPopup()" class="btn-red">Abbrechen</button>
+        </div>
       </div>
     </div>
 
@@ -192,11 +227,12 @@
           />
           <span id="val6">3</span>
         </div>
-
-        <button onclick="submitRating()">Absenden</button>
-        <button onclick="closePopup('popupRate')" style="margin-top: 10px">
-          Schliessen
+        <div class="trip-buttons">
+          <button onclick="submitRating()">Absenden</button>
+          <button onclick="closePopup('popupRate')" style="margin-top: 10px">
+          Abbrechen
         </button>
+        </div>
       </div>
     </div>
 
