@@ -190,34 +190,33 @@ function startRating() {
 }
 
 function gettingSchoolRating(position) {
+  let rating = {
+    anschliessen: null,
+    wettergeschuetzt: null,
+    qualitaet: null,
+    anzahl: null,
+    PPerreichbar: null,
+    Schuleerreichbar: null,
+  };
   let lat = position.coords.latitude;
   let lng = position.coords.longitude;
   let coords = [lat, lng];
   let veloparkplatz = document.querySelector(
     'input[name="veloparkplatz"]:checked'
   )?.value;
-  let wettergeschuetzt = document.querySelector(
-    'input[name="Wettergeschuetzt"]:checked'
-  )?.value;
-  let anschliessen = document.querySelector(
-    'input[name="anschliessen"]:checked'
-  )?.value;
-  let durchfahren = document.querySelector(
-    'input[name="durchfahren"]:checked'
-  )?.value;
-
-  let weitWeg = document.getElementById("q5").value;
-  let vielePlaetze = document.getElementById("q6").value;
+  if (veloparkplatz === "True") {
+    rating.anschliessen =
+      document.querySelector('input[name="anschliessen"]:checked')?.value ===
+      "True";
+    rating.wettergeschuetzt =
+      document.querySelector('input[name="Wettergeschuetzt"]:checked')
+        ?.value === "True";
+    rating.qualitaet = document.getElementById("qualitaet").value;
+    rating.anzahl = document.getElementById("anzahl").value;
+    rating.PPerreichbar = document.getElementById("ErreichbarStra").value;
+    rating.Schuleerreichbar = document.getElementById("ErreichbarSchu").value;
+  }
   let rate_time = new Date().toISOString();
-
-  const rating = {
-    veloparkplatz,
-    wettergeschuetzt,
-    anschliessen,
-    durchfahren,
-    weitWeg,
-    vielePlaetze,
-  };
 
   console.log("Rating:", rating, coords);
   SchoolPos.coords = coords;
@@ -266,7 +265,7 @@ function insertPoint() {
     trackState.rating.strassentyp +
     "</strassentyp>\n" +
     "      <hoechstgeschwindigkeit>" +
-    1 + //trackState.rating.geschwindigkeit +
+    trackState.rating.geschwindigkeit +
     "</hoechstgeschwindigkeit>\n" +
     "      <ampeln>" +
     trackState.rating.vieleAmpeln +
@@ -307,7 +306,76 @@ function insertPoint() {
   });
 }
 
-function insertRating() {}
+function insertRating() {
+  let postData =
+    "<wfs:Transaction\n" +
+    '  service="WFS"\n' +
+    '  version="1.0.0"\n' +
+    '  xmlns="http://www.opengis.net/wfs"\n' +
+    '  xmlns:wfs="http://www.opengis.net/wfs"\n' +
+    '  xmlns:gml="http://www.opengis.net/gml"\n' +
+    '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n' +
+    '  xmlns:GTA25_project="https://www.gis.ethz.ch/GTA25_project"\n' +
+    '  xsi:schemaLocation="https://www.gis.ethz.ch/GTA25_project\n' +
+    "                      https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_project/wfs?service=WFS&amp;version=1.0.0&amp;request=DescribeFeatureType&amp;typeName=GTA25_project%3Abewertung_schule\n" +
+    "                      http://www.opengis.net/wfs\n" +
+    '                      https://baug-ikg-gis-01.ethz.ch:8443/geoserver/schemas/wfs/1.0.0/WFS-basic.xsd">\n' +
+    "  <wfs:Insert>\n" +
+    "    <GTA25_project:bewertung_schule>\n" +
+    "      <bewertungsdatum>" +
+    schoolState.pos.rate_time +
+    "</bewertungsdatum>\n" +
+    "      <velo_ppq>" +
+    schoolState.rating.qualitaet +
+    "</velo_ppq>\n" +
+    "      <kapazitaet_pp>" +
+    schoolState.rating.anzahl +
+    "</kapazitaet_pp>\n" +
+    "      <zugaenglichkeit_schule>" +
+    schoolState.rating.Schuleerreichbar +
+    "</zugaenglichkeit_schule>\n" +
+    "      <zugaenglichkeit_pp>" +
+    schoolState.rating.PPerreichbar +
+    "</zugaenglichkeit_pp>\n" +
+    "      <wetterschutz>" +
+    schoolState.rating.wettergeschuetzt +
+    "</wetterschutz>\n" +
+    "      <schliessen>" +
+    schoolState.rating.anschliessen +
+    "</schliessen>\n" +
+    "      <GPS>\n" +
+    '        <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">\n' +
+    '          <gml:coordinates xmlns:gml="http://www.opengis.net/gml" decimal="." cs="," ts=" ">' +
+    schoolState.pos.coords[0] +
+    "," +
+    schoolState.pos.coords[1] +
+    "</gml:coordinates>\n" +
+    "        </gml:Point>\n" +
+    "      </GPS>\n" +
+    "    </GTA25_project:bewertung_schule>\n" +
+    "  </wfs:Insert>\n" +
+    "</wfs:Transaction>";
+  $.ajax({
+    method: "POST",
+    url: wfs,
+    dataType: "xml",
+    contentType: "text/xml",
+    data: postData,
+    success: function () {
+      //Success feedback
+      console.log("Success from AJAX, data sent to Geoserver");
+
+      // Do something to notisfy user
+      alert("Check if data is inserted into database");
+    },
+    error: function (xhr, errorThrown) {
+      //Error handling
+      console.log("Error from AJAX");
+      console.log(xhr.status);
+      console.log(errorThrown);
+    },
+  });
+}
 /**
  * UI Funktioen
  */
