@@ -81,6 +81,9 @@ def get_mean_value_from_table(col_name):
     table_schulen = pd.read_sql(f"SELECT {col_name} FROM gta25_g3.schule", engine)
     table_routen = pd.read_sql(f"SELECT {col_name} FROM gta25_g3.velovorzugslinien", engine)
     # compute mean
+    table_one_column = gpd.GeoDataFrame(table_one_column)
+    table_schulen = gpd.GeoDataFrame(table_schulen)
+    table_routen = gpd.GeoDataFrame(table_routen)
     trip = match_trip(table_one_column, table_schulen, table_routen)
 
     # write new data in db
