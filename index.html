@@ -57,40 +57,17 @@
     <div id="popupTrip" class="popup">
       <div class="popup-content">
         <h2>Rate Trip</h2>
-
         <div class="question">
-          <label>Hat es einen Veloweg?</label>
+          <label>Was war es für eine Strasse?</label>
           <label>
-            <input
-              type="radio"
-              name="veloweg"
-              value="ja"
-              onclick="toggleVelowegExtra(true)"
-            />
-            Ja
-            <input
-              type="radio"
-              name="veloweg"
-              value="nein"
-              onclick="toggleVelowegExtra(false)"
-            />
-            Nein
+            <input type="radio" name="strassetyp" value="Hauptstrasse" />
+            Hauptstrasse<br />
+            <input type="radio" name="strassetyp" value="Quartierweg" />
+            Quartierweg<br />
+            <input type="radio" name="strassetyp" value="Tram" /> Strasse mit
+            Tram<br />
           </label>
         </div>
-
-        <!-- Container für zusätzliche Option -->
-        <div
-          class="question"
-          id="velowegExtra"
-          style="display: none; margin-left: 20px"
-        >
-          <label>Ist der Weg baulich abgetrennt?</label>
-          <label>
-            <input type="radio" name="abgetrennt" value="ja" /> Ja
-            <input type="radio" name="abgetrennt" value="nein" /> Nein
-          </label>
-        </div>
-
         <div class="question">
           <label>Höchste Geschwindigkeitsbegrenzung</label>
           <label>
@@ -99,6 +76,24 @@
             <input type="radio" name="geschwindigkeit" value="50" /> 50
           </label>
         </div>
+        <div class="question">
+          <label>Wie gut war der Velostreifen/Veloweg</label>
+          <input
+            type="range"
+            min="1"
+            max="5"
+            value="3"
+            id="q8"
+            oninput="updateValue('abgetrennt', this.value)"
+          />
+          <span id="abgetrennt">3</span>
+        </div>
+        <!-- Container für zusätzliche Option -->
+        <div
+          class="question"
+          id="velowegExtra"
+          style="display: none; margin-left: 20px"
+        ></div>
 
         <div class="question">
           <label>Viele Ampeln? (1: keine, 5: viele)</label>
@@ -111,6 +106,20 @@
             oninput="updateValue('Ampeln', this.value)"
           />
           <span id="Ampeln">3</span>
+        </div>
+        <div class="question">
+          <label
+            >Wie gross ist das Verkehrsaufkommen (1: keine, 5: viele)</label
+          >
+          <input
+            type="range"
+            min="1"
+            max="5"
+            value="3"
+            id="q6"
+            oninput="updateValue('Verkehrsaufkommen', this.value)"
+          />
+          <span id="Verkehrsaufkommen">3</span>
         </div>
 
         <!-- Buttons -->
