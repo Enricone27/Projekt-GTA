@@ -142,6 +142,34 @@ footer {
 .question input[type="range"] {
   width: 100%;
 }
+.trip-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.trip-buttons button {
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  color: white;
+}
+
+.btn-gray {
+  background: #666;
+}
+
+.btn-blue {
+  background: #00bcff;
+}
+
+.btn-red {
+  background: #d9534f;
+}
+
 
 /* =====================
    Responsive Media Queries
@@ -171,4 +199,113 @@ footer {
   .popup-content {
     padding: 15px 20px;
   }
+}
+/* =======================
+   Fragezeichen Button Style
+   ======================= */
+.info-btn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: none;
+  color: black;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  transition: 0.3s;
+  z-index: 1000;
+}
+
+.info-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* =======================
+   Einleitungspopup Style
+   ======================= */
+.intro-popup {
+  display: none; /* Standardmäßig ausgeblendet */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Transparenter Hintergrund */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.intro-popup-content {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  max-width: 90%;
+  color: rgb(0, 0, 0);
+  text-align: center;
+}
+
+.intro-popup-content h2 {
+  margin-top: 0;
+}
+
+.intro-popup-content ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 20px 0;
+}
+
+.intro-popup-content li {
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.intro-popup-content button {
+  padding: 10px 20px;
+  background: #00bcff;
+  color: black;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+}
+
+.intro-popup-content button:hover {
+  background: #00a1e6;
+}
+
+/* =======================
+   Responsivität
+   ======================= */
+@media (max-width: 480px) {
+  .intro-popup-content {
+    width: 80%;
+    padding: 20px;
+  }
+/* =======================
+   Legende
+   ======================= */
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.legend-icon {
+  width: 22px;
+  height: 36px; /* Standard Leaflet Icon Höhe */
+  margin-right: 10px;
+}
+
+/* Velovorzugsroute: aktuell blaue Linie */
+.legend-line {
+  width: 30px;
+  height: 4px;
+  background: #4789ff;
+  border-radius: 2px;
+  margin-right: 10px;
 }
