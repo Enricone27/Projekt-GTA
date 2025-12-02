@@ -27,7 +27,8 @@ iu
 ### html css korrektion
 
 - knopf trip record soll rot werden wenn es am recorden ist
-- einen einleitungsScreen mit fragezeichen knopf oben rechts
+- einen einleitungsScreen mit fragezeichen knopf oben rechts + legende (Help Button)
 - schule bewerten soll nur erscheinen wenn in nähe von einer Schule
 - 3 optionen beim bewerten popup: weiter tracken, bewerten, abbrechen
 - live Position soll angezeigt werden sowie aktuell am aufzeichnende Trajektorie soll live aktualisiert werden
+- Slider sollen intuitiver sein und alles in der selben sprache
