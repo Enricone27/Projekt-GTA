@@ -11,6 +11,9 @@ import psycopg2
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 
+#import sonstiges
+from analüse import rating_school
+
 app = Flask(__name__)
 CORS(app, origins=["*", "null"])  # allowing any origin as well as localhost (null)
 
@@ -22,6 +25,8 @@ def compute():
 
     # call backend
     result = get_mean_value_from_table(col_name)
+    
+
 
     # save results in a suitable format to output
     result = jsonify({"mean": result})
