@@ -23,16 +23,17 @@ CORS(app, origins=["*", "null"])  # allowing any origin as well as localhost (nu
 @app.route("/trip", methods=["GET"])
 def trip():
     # retrieve column name from the request arguments
-    col_name = str(request.args.get("column_name", "value"))
+    col_name = str(request.args.get("column_name", "value"))#stimmt nicht ganz
     
 
     # call backend
     table_trajektorien, table_schulen, table_routen = sql.get(col_name)#stimmt nicht ganz
     matched_trips = match_trip(table_trajektorien, table_schulen, table_routen)
 
-
+    #stimmt nicht ganz muss noch schreiben
+    
     # save results in a suitable format to output
-    result = jsonify({"mean": matched_trips})
+    result = jsonify({"wir hoffen du hattest einen guten trip"})
     return result
 
 @app.route("/school", methods=["GET"])
@@ -45,8 +46,11 @@ def school():
     matched_schools = match_school(rated_schools, rated_schools)
     rated_schools = rating_school(matched_schools)
 
+
+    #stimmt nicht ganz muss noch schreiben
+    sql.write(rated_schools)
     # save results in a suitable format to output
-    result = jsonify({"mean": rated_schools})
+    result = jsonify({"viel spass in der schule"})
     return result
 
 

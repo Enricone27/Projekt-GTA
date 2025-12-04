@@ -2,12 +2,19 @@ import geopandas as gpd
 from shapely.geometry import Point
 
 def match_school(rating: gpd.GeoDataFrame, schools: gpd.GeoDataFrame):
+    ''' input:rating, schule: gpd.GeoDataFrame
+        matched bewertung der schule zur schule
+        return: gematchte bewertung
+    '''
     # Schulen an Punkte matchen
     matched = gpd.sjoin_nearest(rating, schools, how="left", distance_col="dist_to_school")
     return matched
 
 def match_trip(trips: gpd.GeoDataFrame, schools: gpd.GeoDataFrame, routes: gpd.GeoDataFrame):
-
+    ''' input: trips, schule, routen: gpd.GeoDataFrame
+        matched startpunkt zu route und endpunkt zu schule
+        return: gematchter trip
+    '''
     # Start- und Endpunkt erzeugen (falls trips LineStrings sind)
     trips = trips.copy()
     trips["start"] = trips.geometry.apply(lambda geom: Point(geom.coords[0]))
