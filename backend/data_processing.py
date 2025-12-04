@@ -7,6 +7,8 @@ def match_school(rating: gpd.GeoDataFrame, schools: gpd.GeoDataFrame):
         return: gematchte bewertung
     '''
     # Schulen an Punkte matchen
+    rating.set_geometry("geometry", inplace=True)
+    schools.set_geometry("geometry", inplace=True)
     matched = gpd.sjoin_nearest(rating, schools, how="left", distance_col="dist_to_school")
     return matched
 
@@ -16,6 +18,8 @@ def match_trip(trips: gpd.GeoDataFrame, schools: gpd.GeoDataFrame, routes: gpd.G
         return: gematchter trip
     '''
     # Start- und Endpunkt erzeugen (falls trips LineStrings sind)
+    trips.set_geometry("geometry", inplace=True)
+
     trips = trips.copy()
     trips["start"] = trips.geometry.apply(lambda geom: Point(geom.coords[0]))
     trips["end"]   = trips.geometry.apply(lambda geom: Point(geom.coords[-1]))

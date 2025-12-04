@@ -20,41 +20,42 @@ def get_db_credentials():
 #cur.mogrify(sql_string_with_placeholders, (100, "abc'def"))
 
 #chat!
-def get(table: str):
+def get_gdfs():
     conn = psycopg2.connect(**get_db_credentials())
     cur = conn.cursor()
-    get_schools = f"SELECT * FROM gta25_g3.schule;"
-    get_trips = "SELECT * FROM gta25_g3.trajektorien;"
-    get_routes = "SELECT * FROM gta25_g3.velovorzugslinien;"
 
-    if table == "schools":
-        cur.execute(get_schools)
-    elif table == "trips":
-        cur.execute(get_trips)
-    elif table == "routes":
-        cur.execute(get_routes)
-    else:
-        raise ValueError("Unknown table")
-    rows = cur.fetchall()
-    cols = [desc[0] for desc in cur.description]
-    gdf = gpd.GeoDataFrame(rows, columns=cols)
-    conn.commit()
+    queries = {
+        "schule": "SELECT * FROM gta25_g3.schule;",
+        "trajektorien":   "SELECT * FROM gta25_g3.trajektorien;",
+        "velovorzugslinien":  "SELECT * FROM gta25_g3.velovorzugslinien;",
+        "bewertung": "SELECT * FROM gta25_g3.bewertung_schule ORDER BY id DESC LIMIT 1;"
+    }
+
+    result = {}
+
+    for name, query in queries.items():
+        cur.execute(query)
+        rows = cur.fetchall()
+        cols = [desc[0] for desc in cur.description]
+        gdf = gpd.GeoDataFrame(rows, columns=cols)
+        result[name] = gdf
+
     conn.close()
-    return gdf
+    return result
 
 #chat!
-def write(table: gpd.GeoDataFrame):
+def write(gdf: gpd.GeoDataFrame, table: str):
     conn = psycopg2.connect(**get_db_credentials())
     cur = conn.cursor()
+
     write_schools = "UPDATE gta25_g3.schule SET score = %s WHERE id = %s;"
     write_trips = "UPDATE gta25_g3.trajektorien;"
 
-    if table == "schools":
+    if table == "schule":
         cur.execute(write_schools)
-    elif table == "trips":
+    elif table == "trajektorien":
         cur.execute(write_trips)
     else:
         raise ValueError("Unknown table")
     conn.commit()
     conn.close()
-
