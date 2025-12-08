@@ -45,6 +45,7 @@ let watchID = null;
 let liveMarker = null;
 let trackPolyline = null;
 let track_cords = [];
+let firstFix = true;
 let geoOptions = {
   enableHighAccuracy: true,
 
@@ -100,6 +101,7 @@ function toggleTrip() {
 
 function start_tracking() {
   track_cords = [];
+  firstFix = true;
 
   // Polyline & Marker zurücksetzen
   if (trackPolyline) {
@@ -161,6 +163,10 @@ function gettingCords(position) {
     // map.setView(latlng, 17); // optional: zentriert beim Start
   } else {
     liveMarker.setLatLng(latlng);
+  }
+  if (firstFix) {
+    map.setView(latlng, 17); 
+    firstFix = false;
   }
 
 }
