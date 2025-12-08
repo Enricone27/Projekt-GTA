@@ -165,10 +165,16 @@ function gettingCords(position) {
   }
 
   if (!liveMarker) {
-    liveMarker = L.marker(latlng).addTo(map);
-    map.setView(latlng, 17); // optional: zentriert beim Start
+    liveMarker = L.circleMarker(latlng, {
+    radius: 6,          // Größe des Kreises
+    color: "#ff0000",   // Randfarbe
+    fillColor: "#ff0000", // Füllfarbe
+    fillOpacity: 0.8    // Transparenz
+  }).addTo(map);
+
+  map.setView(latlng, 17); // optional: Karte zentrieren
   } else {
-    liveMarker.setLatLng(latlng);
+  liveMarker.setLatLng(latlng);
   }
 }
 
