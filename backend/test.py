@@ -24,3 +24,5 @@ bewertung = gdfs["bewertung"]
 
 matched_schools = match_school(bewertung, schule)
 rated_schools = rating_school(matched_schools)
+print(rated_schools.head())
+#sql.write(rated_schools, "schule")

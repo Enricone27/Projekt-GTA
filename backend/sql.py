@@ -25,19 +25,17 @@ def get_gdfs():
     cur = conn.cursor()
 
     queries = {
-        "schule": "SELECT * FROM gta25_g3.schule;",
-        "trajektorien":   "SELECT * FROM gta25_g3.trajektorien;",
-        "velovorzugslinien":  "SELECT * FROM gta25_g3.velovorzugslinien;",
-        "bewertung": "SELECT * FROM gta25_g3.bewertung_schule ORDER BY id DESC LIMIT 1;"
+        "schule": ["SELECT * FROM gta25_g3.schule;", "geometrie"],
+        "trajektorien": ["SELECT * FROM gta25_g3.trajektorien;", "gps"],
+        "velovorzugslinien":  ["SELECT * FROM gta25_g3.glattalnetz;", "geom"],
+        "bewertung": ["SELECT * FROM gta25_g3.bewertung_schule ORDER BY id DESC LIMIT 1;", "GPS"]
     }
 
     result = {}
 
     for name, query in queries.items():
-        cur.execute(query)
-        rows = cur.fetchall()
-        cols = [desc[0] for desc in cur.description]
-        gdf = gpd.GeoDataFrame(rows, columns=cols)
+        
+        gdf = gpd.read_postgis(query[0], conn, geom_col=query[1], crs="EPSG:2056")
         result[name] = gdf
 
     conn.close()
@@ -48,7 +46,7 @@ def write(gdf: gpd.GeoDataFrame, table: str):
     conn = psycopg2.connect(**get_db_credentials())
     cur = conn.cursor()
 
-    write_schools = "UPDATE gta25_g3.schule SET score = %s WHERE id = %s;"
+    write_schools = f"UPDATE gta25_g3.schule SET score = {gdf['score']};"
     write_trips = "UPDATE gta25_g3.trajektorien;"
 
     if table == "schule":
