@@ -45,6 +45,7 @@ let watchID = null;
 let liveMarker = null;
 let trackPolyline = null;
 let track_cords = [];
+let track_cords_save = [];
 let geoOptions = {
   enableHighAccuracy: true,
 
@@ -104,6 +105,8 @@ function toggleTrip() {
 
 function start_tracking() {
   track_cords = [];
+  track_cords.push(...track_cords_save);
+  track_cords_save = [];
 
   stopLivePos();
   if ("geolocation" in navigator) {
@@ -420,6 +423,10 @@ function updateValue(spanId, val) {
 function continueTracking() {
   document.getElementById("popupTrip").style.display = "none";
   // Trip bleibt aktiv
+  console.log("continue");
+  console.log(track_cords);
+  track_cords_save = track_cords;
+  toggleTrip();
   console.log("Tracking wird fortgesetzt.");
 }
 
@@ -427,6 +434,7 @@ function continueTracking() {
 function cancelTripPopup() {
   document.getElementById("popupTrip").style.display = "none";
   stopLivePos();
+  track_cords = [];
   console.log("Trip-Bewertung abgebrochen.");
 }
 
@@ -447,7 +455,7 @@ function closePopup(id) {
 function startLivePos(latlng) {
   if (!trackPolyline) {
     trackPolyline = L.polyline(track_cords, {
-      color: "#4789ff",
+      color: "#6123d3",
       weight: 5,
     }).addTo(map);
     console.log(track_cords);
@@ -459,10 +467,10 @@ function startLivePos(latlng) {
 
   if (!liveMarker) {
     liveMarker = L.circleMarker(latlng, {
-      radius: 6, // Größe des Kreises
-      color: "#ff0000", // Randfarbe
-      fillColor: "#ff0000", // Füllfarbe
-      fillOpacity: 0, // Transparenz
+      radius: 5, // Größe des Kreises
+      color: "#9b2929", // Randfarbe
+      fillColor: "#9b2929", // Füllfarbe
+      fillOpacity: 0.4, // Transparenz
     }).addTo(map);
 
     map.setView(latlng, 17); // optional: Karte zentrieren
