@@ -323,6 +323,7 @@ function insertPoint() {
       console.log(errorThrown);
     },
   });
+  fetch("/trip");
 }
 
 function insertRating() {
@@ -394,6 +395,7 @@ function insertRating() {
       console.log(errorThrown);
     },
   });
+  fetch("/school");
 }
 /**
  * UI Funktioen
