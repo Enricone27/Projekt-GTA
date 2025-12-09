@@ -357,11 +357,11 @@ function insertRating() {
     '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n' +
     '  xmlns:GTA25_project="https://www.gis.ethz.ch/GTA25_project"\n' +
     '  xsi:schemaLocation="https://www.gis.ethz.ch/GTA25_project\n' +
-    "                      https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_project/wfs?service=WFS&amp;version=1.0.0&amp;request=DescribeFeatureType&amp;typeName=GTA25_project%3Abewertung_schule9\n" +
+    "                      https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_project/wfs?service=WFS&amp;version=1.0.0&amp;request=DescribeFeatureType&amp;typeName=GTA25_project%3Abewertung_schule\n" +
     "                      http://www.opengis.net/wfs\n" +
     '                      https://baug-ikg-gis-01.ethz.ch:8443/geoserver/schemas/wfs/1.0.0/WFS-basic.xsd">\n' +
     "  <wfs:Insert>\n" +
-    "    <GTA25_project:bewertung_schule9>\n" +
+    "    <GTA25_project:bewertung_schule>\n" +
     "      <bewertungsdatum>" +
     schoolState.pos.rate_time +
     "</bewertungsdatum>\n" +
@@ -392,7 +392,7 @@ function insertRating() {
     "</gml:coordinates>\n" +
     "        </gml:Point>\n" +
     "      </GPS>\n" +
-    "    </GTA25_project:bewertung_schule9>\n" +
+    "    </GTA25_project:bewertung_schule>\n" +
     "  </wfs:Insert>\n" +
     "</wfs:Transaction>";
   $.ajax({
