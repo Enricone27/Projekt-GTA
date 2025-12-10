@@ -6,10 +6,7 @@ def zeugs():
    return
 
 # Hilfsfunktion zur MinMax-Normalisierung
-def normalize(series):
-    if series.max() == series.min():
-        return 1  # verhindert Division durch 0
-    return (series - series.min()) / (series.max() - series.min())
+
 
 def rating_school(school: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     """
@@ -21,23 +18,9 @@ def rating_school(school: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     """
 
     school = school.copy()
-    # Liste der Bewertungsfelder
-    fields = [
-        "velo_ppq",
-        "kapazitaet_pp",
-        "zugaenglichkeit_schule",
-        "zugaenglichkeit_pp",
-        "wetterschutz",
-        "schliessen"
-    ]
+ 
 
     # Normalisierte Werte sammeln
-    norm = {}
-    for f in fields:
-        if f in school.columns:
-            norm[f] = normalize(school[f])
-        else:
-            norm[f] = 0
 
     # Gewichte (kannst du jederzeit anpassen)
     weights = {
@@ -50,11 +33,22 @@ def rating_school(school: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     }
 
     # Score = gewichtete Summe der normalisierten Felder
-    school["score"] = sum(norm[f] * weights[f] for f in fields)
+    school['wetterschutz'] = school['wetterschutz'].astype(bool)
+    school['schliessen'] = school['schliessen'].astype(bool)
+    school["score"] = sum(school[k] * weights[k] for k in weights.keys())
 
     return school
 
 
-'''def rating_trip(trip: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-    trip["score"] = None
-    return trip'''
+def rating_trip(trip: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    trip = trip.copy()
+    weights = {
+        "hoechstgeschwindigkeit": 0.4,
+        "velostreifen": 0.3,
+        "ampeln": 0.2,
+        "verkehrsaufkommen": 0.1
+    }
+    trip['hoechstgeschwindigkeit'] = trip['hoechstgeschwindigkeit'].astype(bool)
+
+    trip["score"] = sum(trip[k] * weights[k] for k in weights.keys())
+    return trip

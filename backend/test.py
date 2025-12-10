@@ -12,7 +12,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 
 #import sonstiges
-from analüse import rating_school
+from analüse import rating_school, rating_trip
 from data_processing import match_trip, match_school
 import sql
 
@@ -22,8 +22,8 @@ trajektorien = gdfs["trajektorien"]
 velovorzugslinien  = gdfs["velovorzugslinien"]
 bewertung = gdfs["bewertung"]
 
-matched_trips = match_trip(trajektorien, schule, velovorzugslinien)
 
-#print(matched_trips.head())
-print(matched_trips.columns)
-#sql.write(matched_trips, "trajektorien")
+print(rating_trip(trajektorien).head())
+
+
+#sql.write(rated_schools, "schule")

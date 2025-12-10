@@ -1,5 +1,7 @@
 import geopandas as gpd
 from shapely.geometry import Point
+import numpy as np
+from scipy import constants
 
 def match_school(rating: gpd.GeoDataFrame, schools: gpd.GeoDataFrame):
     ''' input:rating, schule: gpd.GeoDataFrame
@@ -35,7 +37,14 @@ def match_trip(trips: gpd.GeoDataFrame, schools: gpd.GeoDataFrame, routes: gpd.G
 
     # Beide Ergebnisse wieder mergen (über Index)
     result = trips.copy()
-    result = result.join(trips_with_school.filter(like="_right"), rsuffix="_school")
+    result = result.join(trips_with_school.filter(like="_right"))
     result = result.join(trips_with_route.filter(like="_right"), rsuffix="_route")
+    result = result.drop(columns=["start", "end", "index_right", "index_right_route", 'score_right'])
+    result = result.rename(columns={"id_right": "id_schule"})
+    result = result.rename(columns={"id_right_route": "id_route"})
+
+    # durchschnittsgeschwindigkeit berechnen
+    dt = (result['zeit_ziel'] - result['zeit_start']).dt.total_seconds()
+    result['landegeschwindigkeit'] = np.where(dt != 0, result.geometry.length / dt, constants.c)
 
     return result
