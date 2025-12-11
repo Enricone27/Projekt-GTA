@@ -18,11 +18,6 @@ def rating_school(school: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     """
 
     school = school.copy()
- 
-
-    # Normalisierte Werte sammeln
-
-    # Gewichte (kannst du jederzeit anpassen)
     weights = {
         "velo_ppq": 0.2,
         "kapazitaet_pp": 0.2,
@@ -32,7 +27,6 @@ def rating_school(school: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         "schliessen": 0.05
     }
 
-    # Score = gewichtete Summe der normalisierten Felder
     school['wetterschutz'] = school['wetterschutz'].astype(bool)
     school['schliessen'] = school['schliessen'].astype(bool)
     school["score"] = sum(school[k] * weights[k] for k in weights.keys())
@@ -43,10 +37,10 @@ def rating_school(school: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
 def rating_trip(trip: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     trip = trip.copy()
     weights = {
-        "hoechstgeschwindigkeit": 0.4,
+        "hoechstgeschwindigkeit": 0.2,
         "velostreifen": 0.3,
         "ampeln": 0.2,
-        "verkehrsaufkommen": 0.1
+        "verkehrsaufkommen": 0.3
     }
     trip['hoechstgeschwindigkeit'] = trip['hoechstgeschwindigkeit'].astype(bool)
 
