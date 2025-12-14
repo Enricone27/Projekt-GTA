@@ -6,9 +6,9 @@
       <se:Name>trajektorien</se:Name>
       <se:FeatureTypeStyle>
         <se:Rule>
-          <se:Name>0 - 0.2</se:Name>
+          <se:Name>0 - 1</se:Name>
           <se:Description>
-            <se:Title>0 - 0.2</se:Title>
+            <se:Title>0 - 1</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:And>
@@ -18,7 +18,7 @@
               </ogc:PropertyIsGreaterThanOrEqualTo>
               <ogc:PropertyIsLessThanOrEqualTo>
                 <ogc:PropertyName>score</ogc:PropertyName>
-                <ogc:Literal>0.20000000000000001</ogc:Literal>
+                <ogc:Literal>1</ogc:Literal>
               </ogc:PropertyIsLessThanOrEqualTo>
             </ogc:And>
           </ogc:Filter>
@@ -32,19 +32,19 @@
           </se:LineSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>0.2 - 0.4</se:Name>
+          <se:Name>1 - 2</se:Name>
           <se:Description>
-            <se:Title>0.2 - 0.4</se:Title>
+            <se:Title>1 - 2</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:And>
               <ogc:PropertyIsGreaterThan>
                 <ogc:PropertyName>score</ogc:PropertyName>
-                <ogc:Literal>0.20000000000000001</ogc:Literal>
+                <ogc:Literal>1</ogc:Literal>
               </ogc:PropertyIsGreaterThan>
               <ogc:PropertyIsLessThanOrEqualTo>
                 <ogc:PropertyName>score</ogc:PropertyName>
-                <ogc:Literal>0.40000000000000002</ogc:Literal>
+                <ogc:Literal>2</ogc:Literal>
               </ogc:PropertyIsLessThanOrEqualTo>
             </ogc:And>
           </ogc:Filter>
@@ -58,19 +58,19 @@
           </se:LineSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>0.4 - 0.6</se:Name>
+          <se:Name>2 - 3</se:Name>
           <se:Description>
-            <se:Title>0.4 - 0.6</se:Title>
+            <se:Title>2 - 3</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:And>
               <ogc:PropertyIsGreaterThan>
                 <ogc:PropertyName>score</ogc:PropertyName>
-                <ogc:Literal>0.40000000000000002</ogc:Literal>
+                <ogc:Literal>2</ogc:Literal>
               </ogc:PropertyIsGreaterThan>
               <ogc:PropertyIsLessThanOrEqualTo>
                 <ogc:PropertyName>score</ogc:PropertyName>
-                <ogc:Literal>0.59999999999999998</ogc:Literal>
+                <ogc:Literal>3</ogc:Literal>
               </ogc:PropertyIsLessThanOrEqualTo>
             </ogc:And>
           </ogc:Filter>
@@ -84,19 +84,19 @@
           </se:LineSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>0.6 - 0.8</se:Name>
+          <se:Name>3 - 4</se:Name>
           <se:Description>
-            <se:Title>0.6 - 0.8</se:Title>
+            <se:Title>3 - 4</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:And>
               <ogc:PropertyIsGreaterThan>
                 <ogc:PropertyName>score</ogc:PropertyName>
-                <ogc:Literal>0.59999999999999998</ogc:Literal>
+                <ogc:Literal>3</ogc:Literal>
               </ogc:PropertyIsGreaterThan>
               <ogc:PropertyIsLessThanOrEqualTo>
                 <ogc:PropertyName>score</ogc:PropertyName>
-                <ogc:Literal>0.80000000000000004</ogc:Literal>
+                <ogc:Literal>4</ogc:Literal>
               </ogc:PropertyIsLessThanOrEqualTo>
             </ogc:And>
           </ogc:Filter>
@@ -110,19 +110,19 @@
           </se:LineSymbolizer>
         </se:Rule>
         <se:Rule>
-          <se:Name>0.8 - 1</se:Name>
+          <se:Name>4 - 5</se:Name>
           <se:Description>
-            <se:Title>0.8 - 1</se:Title>
+            <se:Title>4 - 5</se:Title>
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:And>
               <ogc:PropertyIsGreaterThan>
                 <ogc:PropertyName>score</ogc:PropertyName>
-                <ogc:Literal>0.80000000000000004</ogc:Literal>
+                <ogc:Literal>4</ogc:Literal>
               </ogc:PropertyIsGreaterThan>
               <ogc:PropertyIsLessThanOrEqualTo>
                 <ogc:PropertyName>score</ogc:PropertyName>
-                <ogc:Literal>1</ogc:Literal>
+                <ogc:Literal>5</ogc:Literal>
               </ogc:PropertyIsLessThanOrEqualTo>
             </ogc:And>
           </ogc:Filter>
