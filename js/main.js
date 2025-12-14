@@ -1,39 +1,17 @@
+let wfs = "https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_project/wfs";
+let wms = "https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_project/wms";
+let f_wms = "https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_lab13/wms";
+
 /**
  * The onload function is called when the HTML has finished loading.
  */
 function onload() {
   loadMap();
 }
+
 /**
  * loads the Map on the background
  */
-function loadMap() {
-  map = L.map("map").setView([47.37675, 8.540721], 16);
-  markers = L.layerGroup();
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
-
-  map.addLayer(markers);
-  fetch("data/velovorzugsrouten.json")
-    .then((response) => response.json())
-    .then((data) => {
-      L.geoJSON(data).addTo(map);
-    })
-    .catch((error) => {
-      console.error("Fehler beim Laden der GeoJSON-Datei:", error);
-    });
-  map.addLayer(markers);
-  fetch("data/stzh.poi_volksschule_view.json")
-    .then((response) => response.json())
-    .then((data) => {
-      L.geoJSON(data).addTo(map);
-    })
-    .catch((error) => {
-      console.error("Fehler beim Laden der GeoJSON-Datei:", error);
-    });
-}
 
 /**
  * Alles was für die GPS Track Aufzeichnung notwendig ist.
@@ -252,7 +230,6 @@ function gettingSchoolRating(position) {
  * TODO:
  * EXPORT TO DB
  */
-let wfs = "https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_project/wfs";
 
 function insertPoint() {
   let coordString = trackState.track.coords
@@ -492,4 +469,65 @@ function stopLivePos() {
     map.removeLayer(liveMarker);
     liveMarker = null;
   }
+}
+function loadMap() {
+  map = L.map("map").setView([47.37675, 8.540721], 16);
+  markers = L.layerGroup();
+  let osm_map = L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }
+  ).addTo(map);
+
+  map.addLayer(markers);
+  fetch("data/velovorzugsrouten.json")
+    .then((response) => response.json())
+    .then((data) => {
+      L.geoJSON(data).addTo(map);
+    })
+    .catch((error) => {
+      console.error("Fehler beim Laden der GeoJSON-Datei:", error);
+    });
+  map.addLayer(markers);
+  fetch("data/stzh.poi_volksschule_view.json")
+    .then((response) => response.json())
+    .then((data) => {
+      L.geoJSON(data).addTo(map);
+    })
+    .catch((error) => {
+      console.error("Fehler beim Laden der GeoJSON-Datei:", error);
+    });
+
+  let waterFountain = L.tileLayer.wms(f_wms, {
+    layers: "GTA25_lab13:water_fountain",
+    format: "image/png",
+    transparent: true,
+  });
+  let scools = L.tileLayer.wms(wms, {
+    layers: "GTA25_project:schule",
+    format: "image/png",
+    transparent: true,
+    styles: "schulenG3",
+  });
+  let glattalnetz = L.tileLayer.wms(wms, {
+    layers: "GTA25_project:glattalnetz",
+    format: "image/png",
+    transparent: true,
+  });
+  let trajektorien = L.tileLayer.wms(wms, {
+    layers: "GTA25_project:trajektorien99",
+    format: "image/png",
+    transparent: true,
+    styles: "trajektorieG3",
+  });
+
+  let overlays = {
+    "Bewertung der Schulen": scools,
+    "Bewertete Trajektorien": trajektorien,
+  };
+  const layerControl = L.control.layers(null, overlays);
+
+  layerControl.addTo(map);
 }
