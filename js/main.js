@@ -471,7 +471,11 @@ function stopLivePos() {
   }
 }
 function loadMap() {
-  map = L.map("map").setView([47.37675, 8.540721], 16);
+  map = L.map("map", {
+    attributionControl: false
+  }).setView([47.37675, 8.540721], 16);
+
+
   markers = L.layerGroup();
   let osm_map = L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
