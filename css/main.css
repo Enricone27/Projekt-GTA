@@ -326,3 +326,6 @@ footer {
   margin-right: 10px;
   flex-shrink: 0;
 }
+.leaflet-control-attribution {
+    display: none;
+}
