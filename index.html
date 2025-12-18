@@ -7,7 +7,7 @@
 
     <title>GTA-Projekt Schulwege</title>
 
-    <!-- With "link rel stylesheet", you can import CSS files. -->
+    <!-- import leaflet stylesheet, link the css file, and import fonts -->
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -22,8 +22,7 @@
       rel="stylesheet"
     />
 
-    <!-- With script tags you can import JavaScript files. Defer makes sure that the browser does not wait until
-         the script is completely loaded, but instead executes it once the HTML is downloaded and parsed. -->
+    <!-- loads the scripts jquery, leaflet(for showing a map) and the own js code -->
     <script
       src="https://code.jquery.com/jquery-3.7.1.min.js"
       integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
@@ -38,18 +37,19 @@
     ></script>
     <script src="js/main.js" defer></script>
   </head>
+  <!-- onload loads the map -> js -->
   <body onload="onload()">
     <header>GTA-Projekt Schulwege</header>
     <div class="content">
       <div id="map"></div>
     </div>
 
-    <!-- Fragezeichen Button oben rechts -->
+    <!-- questionmark button top right -->
     <button id="infoBtn" class="info-btn" onclick="toggleIntroPopup()">
       ?
     </button>
 
-    <!-- Einleitungspopup -->
+    <!-- intropopup -->
     <div id="introPopup" class="intro-popup">
       <div class="intro-popup-content">
         <h1>Wie funktioniert die App?</h1>
@@ -70,7 +70,7 @@
         </ul>
         <h3>Legende</h3>
         <div class="legend-box">
-          <!-- Schulstandort -->
+          <!-- school locations -->
           <div class="legend-item">
             <img
               src="https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png"
@@ -98,7 +98,7 @@
     <a href="#" class="infusr-pb-button" id="rateBtn" onclick="openRatePopup()"
       >Schule Bewerten</a
     >
-
+    <!-- Trip rating popup -->
     <div id="popupTrip" class="popup">
       <div class="popup-content">
         <h2>Rate Trip</h2>
@@ -136,7 +136,7 @@
             <span>gut</span>
           </div>
         </div>
-        <!-- Container für zusätzliche Option -->
+        <!-- Container for extra Option -->
         <div
           class="question"
           id="velowegExtra"
@@ -175,7 +175,7 @@
             <span>gross</span>
           </div>
         </div>
-
+        <!-- continue tracking, rate or cancel rating -->
         <div class="trip-buttons">
           <button onclick="continueTracking()" class="btn-gray">
             Weiter tracken
@@ -192,8 +192,6 @@
     <div id="popupRate" class="popup">
       <div class="popup-content">
         <h2>Rate School</h2>
-
-        <!-- JA/NEIN Fragen -->
         <div class="question">
           <label>Hat es einen Veloparkplatz?</label>
           <label>
@@ -266,7 +264,7 @@
           </div>
           </div>
         </div>
-
+        <!-- send or cancel rating -->
         <div>
           <button onclick="startRating()">Absenden</button>
           <button onclick="closePopup('popupRate')" style="margin-top: 10px">
@@ -275,7 +273,7 @@
         </div>
       </div>
     </div>
-
+    <!-- footer with osm refence so it doesnt have to show up on the map -->
     <footer id="map-attribution">
       © <a href="https://www.openstreetmap.org/copyright" target="_blank">
       OpenStreetMap

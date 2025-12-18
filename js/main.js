@@ -4,19 +4,14 @@ let f_wms = "https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_lab13/wms";
 
 /**
  * The onload function is called when the HTML has finished loading.
+ * and then loads the map on the background
  */
 function onload() {
   loadMap();
 }
 
 /**
- * loads the Map on the background
- */
-
-/**
- * Alles was für die GPS Track Aufzeichnung notwendig ist.
- * und anschliessend um den Track zu Bewerten und abschicken
- *
+ * Everything thats necessary to track gps and then to rate.
  */
 let tripActive = false;
 let watchID = null;
@@ -27,9 +22,6 @@ let track_cords_save = [];
 let geoOptions = {
   enableHighAccuracy: true,
 
-  /*
-  maximumAge: 15000, // The maximum age of a cached location (15 seconds).
-  timeout: 12000, // A maximum of 12 seconds before timeout.*/
 };
 
 let trackState = {
@@ -50,25 +42,20 @@ let SchoolPos = {
   rate_time: null,
 };
 
-/* Start/End Trip Button Logik */
+/* Start/End Trip Button Logic */
 function toggleTrip() {
   const btn = document.getElementById("tripBtn");
 
   if (!tripActive) {
-    //START
     tripActive = true;
     btn.textContent = "Beenden";
     btn.style.backgroundColor = "red";
-    // MECHANISMUS fÜR GPS AUFNEHMEN
     start_tracking();
   } else {
-    //STOP
     tripActive = false;
     btn.textContent = "Aufzeichnen";
     btn.style.backgroundColor = "#00bcff";
-    // GPS STOPPEN
     stop_tracking();
-    // Objekt beschreiben
     console.log(track_cords);
     if (track_cords.length == 1) {
       alert("Die Aufzeichnung war zu kurz. Versuche es nochmals länger!");
@@ -76,7 +63,6 @@ function toggleTrip() {
     }
     track.coords = track_cords;
     trackState.track = track;
-    // Bewertung einleiten
     document.getElementById("popupTrip").style.display = "flex";
   }
 }
@@ -143,7 +129,7 @@ function geoError(error) {
 }
 
 /**
- * Bewertungen von Tracks und POIs
+ * Rating of tracks and POIs
  */
 function submitTripRating() {
   let geschwindigkeit =
@@ -169,10 +155,11 @@ function submitTripRating() {
   console.log("Trip Rating:", rating);
   trackState.rating = rating;
   console.log(trackState);
-  insertPoint(); // hier gehts dann weiter mit auf die DB laden
+  insertPoint(); // here it continues with loading into the db
   stopLivePos();
   closePopup("popupTrip");
 }
+
 
 function startRating() {
   if ("geolocation" in navigator) {
@@ -227,8 +214,7 @@ function gettingSchoolRating(position) {
 }
 
 /**
- * TODO:
- * EXPORT TO DB
+ * export point to db
  */
 
 function insertPoint() {
@@ -303,6 +289,10 @@ function insertPoint() {
   fetch("/trip");
 }
 
+/**
+ * export rating to db
+ */
+
 function insertRating() {
   let postData =
     "<wfs:Transaction\n" +
@@ -375,33 +365,31 @@ function insertRating() {
   fetch("/school");
 }
 /**
- * UI Funktioen
+ * UI functions
  */
 
 // Rate School Button  UI Funktion
 function openRatePopup() {
   document.getElementById("popupRate").style.display = "flex";
 }
-// Toggle Zusatzfrage Veloweg UI Funktion
+// Toggle exra question Veloweg UI Function
 function toggleVeloPP(show) {
   const extra = document.getElementById("parkplatz");
   if (show) {
     extra.style.display = "block";
   } else {
     extra.style.display = "none";
-    // Auswahl zurücksetzen
     const radios = extra.querySelectorAll('input[name="abgetrennt"]');
     radios.forEach((r) => (r.checked = false));
   }
 }
-// Slider-Wert live aktualisieren UI Funktion
+// Slider-Wert live reload UI Function
 function updateValue(spanId, val) {
   document.getElementById(spanId).textContent = val;
 }
-// Weiter tracken
+// continue
 function continueTracking() {
   document.getElementById("popupTrip").style.display = "none";
-  // Trip bleibt aktiv
   console.log("continue");
   console.log(track_cords);
   track_cords_save = track_cords;
@@ -409,7 +397,7 @@ function continueTracking() {
   console.log("Tracking wird fortgesetzt.");
 }
 
-// Popup abbrechen (ohne Bewertung, ohne Tracking)
+// Cancel popup
 function cancelTripPopup() {
   document.getElementById("popupTrip").style.display = "none";
   stopLivePos();
@@ -417,20 +405,22 @@ function cancelTripPopup() {
   console.log("Trip-Bewertung abgebrochen.");
 }
 
-// Funktion, um das Einleitungspopup ein- oder auszublenden
+// Function to change intro popup
 function toggleIntroPopup() {
   const popup = document.getElementById("introPopup");
   popup.style.display = popup.style.display === "flex" ? "none" : "flex";
 }
 
-// Funktion, um das Einleitungspopup zu schließen
+// Function to close intro popup
 function closeIntroPopup() {
   document.getElementById("introPopup").style.display = "none";
 }
-// Popup schließen UI Funktion
+// Close popup
 function closePopup(id) {
   document.getElementById(id).style.display = "none";
 }
+
+// live trajectory and location function
 function startLivePos(latlng) {
   if (!trackPolyline) {
     trackPolyline = L.polyline(track_cords, {
@@ -439,7 +429,6 @@ function startLivePos(latlng) {
     }).addTo(map);
     console.log(track_cords);
   } else {
-    // Linie live aktualisieren
     trackPolyline.setLatLngs(track_cords);
     console.log(track_cords);
   }
@@ -459,8 +448,8 @@ function startLivePos(latlng) {
     console.log(latlng);
   }
 }
+// stop showing postion and trajectory
 function stopLivePos() {
-  // Polyline & Marker zurücksetzen
   if (trackPolyline) {
     map.removeLayer(trackPolyline);
     trackPolyline = null;
@@ -470,6 +459,8 @@ function stopLivePos() {
     liveMarker = null;
   }
 }
+
+//load map, school and bike path data
 function loadMap() {
   map = L.map("map", {
     attributionControl: false
