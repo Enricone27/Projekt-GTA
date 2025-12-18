@@ -9,42 +9,71 @@ def match_school(rating: gpd.GeoDataFrame, schools: gpd.GeoDataFrame):
         return: gematchte bewertung
     '''
     # Schulen an Punkte matchen
-   
+    if rating.crs != schools.crs:
+        rating = rating.to_crs(schools.crs)
     matched = gpd.sjoin_nearest(rating, schools, how="left", distance_col="dist_to_school")
     return matched
 
-def match_trip(trips: gpd.GeoDataFrame, schools: gpd.GeoDataFrame, routes: gpd.GeoDataFrame):
-    ''' input: trips, schule, routen: gpd.GeoDataFrame
-        matched startpunkt zu route und endpunkt zu schule
-        return: gematchter trip
-    '''
-    # Start- und Endpunkt erzeugen (falls trips LineStrings sind)
-   
+
+
+def match_trip1(
+    trips: gpd.GeoDataFrame,
+    schools: gpd.GeoDataFrame,
+    routes: gpd.GeoDataFrame,
+) -> gpd.GeoDataFrame:
+    """
+    trips:
+        ['id', 'gps', 'zeit_start', 'zeit_ziel', 'strassentyp',
+         'hoechstgeschwindigkeit', 'velostreifen', 'ampeln',
+         'verkehrsaufkommen', 'score', 'geometry']
+
+    schools:
+        ['id', 'name', 'geometrie', 'score']
+
+    routes:
+        ['id', 'geometry', ...]
+    """
 
     trips = trips.copy()
-    trips["start"] = trips.geometry.apply(lambda geom: Point(geom.coords[0]))
-    trips["end"]   = trips.geometry.apply(lambda geom: Point(geom.coords[-1]))
 
-    # GeoDataFrames für Start/Endpunkt erzeugen
-    start_gdf = gpd.GeoDataFrame(trips.drop(columns="gps"), geometry="start", crs=trips.crs)
-    end_gdf = gpd.GeoDataFrame(trips.drop(columns="gps"), geometry="end", crs=trips.crs)
+    # ---------------- CRS angleichen ----------------
+    if trips.crs != schools.crs:
+        trips = trips.to_crs(schools.crs)
+    if trips.crs != routes.crs:
+        routes = routes.to_crs(schools.crs)
 
-    # Schulen an Endpunkt matchen
-    trips_with_school = gpd.sjoin_nearest(end_gdf, schools, how="left")
+    # ---------------- Start / Ende ----------------
+    trips["start"] = trips.geometry.apply(lambda g: Point(g.coords[0]))
+    trips["end"]   = trips.geometry.apply(lambda g: Point(g.coords[-1]))
 
-    # Routen an Startpunkt matchen
-    trips_with_route = gpd.sjoin_nearest(start_gdf, routes, how="left")
+    # Startpunkt → Route
+    start_gdf = gpd.GeoDataFrame(trips, geometry="start", crs=trips.crs)
+    start_match = gpd.sjoin_nearest(start_gdf, routes[["id", "geom"]],how="left", distance_col="dist_start_route").rename(columns={"id_right": "id_route_match"})
+    #print(start_match)
+    # Endpunkt → Schule
+    end_gdf = gpd.GeoDataFrame(trips, geometry="end", crs=trips.crs)
+    schools_gdf = schools.rename_geometry("geometry")
 
-    # Beide Ergebnisse wieder mergen (über Index)
+    end_match = gpd.sjoin_nearest(end_gdf, schools_gdf[["id", "geometry"]], how="left", distance_col="dist_end_school").rename(columns={"id_right": "id_schule_match"})
+    #print(end_match)
+    # Join
+    
+    
     result = trips.copy()
-    result = result.join(trips_with_school.filter(like="_right"))
-    result = result.join(trips_with_route.filter(like="_right"), rsuffix="_route")
-    result = result.drop(columns=["start", "end", "index_right", "index_right_route", 'score_right'])
-    result = result.rename(columns={"id_right": "id_schule"})
-    result = result.rename(columns={"id_right_route": "id_route"})
+    
+    result['id_route'] = start_match["id_route_match"].values
+    result['id_schule'] = end_match["id_schule_match"].values
 
-    # durchschnittsgeschwindigkeit berechnen
-    dt = (result['zeit_ziel'] - result['zeit_start']).dt.total_seconds()
-    result['landegeschwindigkeit'] = np.where(dt != 0, result.geometry.length / dt, constants.c)
+
+    # ---------------- Geschwindigkeit ----------------
+    dt = (result["zeit_ziel"] - result["zeit_start"]).dt.total_seconds()
+    result["landegeschwindigkeit"] = np.where(
+        dt > 0,
+        result.geometry.length / dt,
+        np.nan
+    )
+
+    # ---------------- Aufräumen ----------------
+    result = result.drop(columns=["start", "end"])
 
     return result

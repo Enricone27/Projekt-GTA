@@ -27,8 +27,8 @@ def rating_school(school: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         "schliessen": 0.05
     }
 
-    school['wetterschutz'] = school['wetterschutz'].astype(bool)
-    school['schliessen'] = school['schliessen'].astype(bool)
+    school['wetterschutz'] = school['wetterschutz'].astype(bool) *5
+    school['schliessen'] = school['schliessen'].astype(bool) *5
     school["score"] = sum(school[k] * weights[k] for k in weights.keys())
 
     return school
@@ -37,12 +37,13 @@ def rating_school(school: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
 def rating_trip(trip: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     trip = trip.copy()
     weights = {
-        "hoechstgeschwindigkeit": 0.2,
-        "velostreifen": 0.3,
+        "hoechstgeschwindigkeit": 0.4,
         "ampeln": 0.2,
-        "verkehrsaufkommen": 0.3
+        "verkehrsaufkommen": 0.4
     }
-    trip['hoechstgeschwindigkeit'] = trip['hoechstgeschwindigkeit'].astype(bool)
-
+    trip['hoechstgeschwindigkeit'] = trip['hoechstgeschwindigkeit'].astype(int)/ 10
+    
+    trip["score"] = 0 
     trip["score"] = sum(trip[k] * weights[k] for k in weights.keys())
+    print(trip["score"])
     return trip
