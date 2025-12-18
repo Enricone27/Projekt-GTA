@@ -1,6 +1,6 @@
 # Projekt-GTA
 
-To run the python App the conda environment gta25 should be installed. The _.yml_ file is provided.
+To run the python App the conda environment **gta25** should be installed. The _.yml_ file is provided.
 
 ## Folder structure
 
