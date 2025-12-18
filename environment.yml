@@ -1,0 +1,41 @@
+name: gta25
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python
+  # geopandas related
+  - numpy=1.26.0
+  - pandas=2.1.1
+  - shapely=2.0.1
+  - fiona=1.9.4
+  - pyproj=3.6.1
+  - rtree=1.0.1
+  - geopy
+  - geopandas=0.14.0
+  # specify additional dependencies to reduce solving for conda
+  - gdal=3.7.0
+  - libgdal
+  - proj
+  - geos
+  - nbsphinx
+  - myst-parser
+  - folium=0.14.0
+  - libpysal
+  - pygeos
+  - xyzservices
+
+  # other envs
+  - scikit-learn=1.3.1
+  - matplotlib
+  - ipyleaflet
+  - contextily
+  - pyrosm
+  - ipyleaflet
+  - jupyter
+  - trackintel
+  - flask
+  - flask_cors
+  - pip
+  - pip: 
+    - smopy
