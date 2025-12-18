@@ -14,28 +14,22 @@ def get_db_credentials():
     return db_credentials
 
 
-
-#This is the example
-#sql_string_with_placeholders = "INSERT INTO test (num, data) VALUES (%s, %s)"
-#cur.mogrify(sql_string_with_placeholders, (100, "abc'def"))
-
-#chat!
 def get_gdfs():
     conn = psycopg2.connect(**get_db_credentials())
     cur = conn.cursor()
 
     queries = {
-        "schule": ["SELECT * FROM gta25_g3.schule;", "geometrie"],
-        "trajektorien": ["SELECT * FROM gta25_g3.trajektorien;", "gps"],
-        "velovorzugslinien":  ["SELECT * FROM gta25_g3.glattalnetz;", "geom"],
-        "bewertung": ["SELECT * FROM gta25_g3.bewertung_schule ORDER BY id DESC LIMIT 1;", "GPS"]
+        "schule": ["SELECT * FROM gta25_g3.schule;", "geometrie", 2056],
+        "trajektorien": ["SELECT * FROM gta25_g3.trajektorien;", "gps", 4326],
+        "velovorzugslinien":  ["SELECT * FROM gta25_g3.glattalnetz;", "geom", 2056],
+        "bewertung": ["SELECT * FROM gta25_g3.bewertung_schule ORDER BY id DESC LIMIT 1;", "GPS", 4326]
     }
 
     result = {}
 
     for name, query in queries.items():
         
-        gdf = gpd.read_postgis(query[0], conn, geom_col=query[1], crs="EPSG:2056")
+        gdf = gpd.read_postgis(query[0], conn, geom_col=query[1], crs=f"EPSG:{query[2]}")
         result[name] = gdf
 
     conn.close()
@@ -48,7 +42,7 @@ def write(gdf: gpd.GeoDataFrame, table: str):
 
     
     write_schools = "UPDATE gta25_g3.schule SET score = %s WHERE id = %s;"
-    write_trips = "UPDATE gta25_g3.trajektorien;"
+    write_trips = "UPDATE gta25_g3.trajektorien SET landegeschwindigkeit = %s, score = %s, id_schule = %s, id_route = %s WHERE id = %s ;"
 
     if table == "schule":
         score = float(gdf['score'].iloc[0])
@@ -56,7 +50,12 @@ def write(gdf: gpd.GeoDataFrame, table: str):
         cur.execute(write_schools, (score, id))
 
     elif table == "trajektorien":
-        cur.execute(write_trips)
+        landegeschwindigkeit = float(gdf['landegeschwindigkeit'].iloc[0])
+        score = float(gdf['score'].iloc[0])
+        id_schule = int(gdf['id_schule'].iloc[0])
+        id_route = int(gdf['id_route'].iloc[0])
+        id = int(gdf['id'].iloc[0])
+        cur.execute(write_trips, (landegeschwindigkeit, score, id_schule, id_route, id))
     else:
         raise ValueError("Unknown table")
     conn.commit()
