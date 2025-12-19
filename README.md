@@ -11,3 +11,9 @@ To run the python App the conda environment **gta25** should be installed. The _
 - `/js/*`. all the functions to run the webapp
 - `/index.html`. the main html file
 - `/environment.yml`. the conda env
+
+## Orientation in the JS File
+
+- Chapter 0 (Line 1-10): Onload
+- Chapter 1 (Line 12-363): Functions to record the Position Data and Rating Data and upload it to the GeoServer
+- Chapter 2 (Line 364- 515): Everything that is needed to run the interactive UI

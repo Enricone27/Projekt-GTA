@@ -1,6 +1,5 @@
 let wfs = "https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_project/wfs";
 let wms = "https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_project/wms";
-let f_wms = "https://baug-ikg-gis-01.ethz.ch:8443/geoserver/GTA25_lab13/wms";
 
 /**
  * The onload function is called when the HTML has finished loading.
@@ -21,7 +20,6 @@ let track_cords = [];
 let track_cords_save = [];
 let geoOptions = {
   enableHighAccuracy: true,
-
 };
 
 let trackState = {
@@ -159,7 +157,6 @@ function submitTripRating() {
   stopLivePos();
   closePopup("popupTrip");
 }
-
 
 function startRating() {
   if ("geolocation" in navigator) {
@@ -463,9 +460,8 @@ function stopLivePos() {
 //load map, school and bike path data
 function loadMap() {
   map = L.map("map", {
-    attributionControl: false
+    attributionControl: false,
   }).setView([47.37675, 8.540721], 16);
-
 
   markers = L.layerGroup();
   let osm_map = L.tileLayer(
@@ -495,22 +491,13 @@ function loadMap() {
       console.error("Fehler beim Laden der GeoJSON-Datei:", error);
     });
 
-  let waterFountain = L.tileLayer.wms(f_wms, {
-    layers: "GTA25_lab13:water_fountain",
-    format: "image/png",
-    transparent: true,
-  });
   let scools = L.tileLayer.wms(wms, {
     layers: "GTA25_project:schule",
     format: "image/png",
     transparent: true,
     styles: "schulenG3",
   });
-  let glattalnetz = L.tileLayer.wms(wms, {
-    layers: "GTA25_project:glattalnetz",
-    format: "image/png",
-    transparent: true,
-  });
+
   let trajektorien = L.tileLayer.wms(wms, {
     layers: "GTA25_project:trajektorien99",
     format: "image/png",
