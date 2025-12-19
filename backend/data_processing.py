@@ -16,7 +16,7 @@ def match_school(rating: gpd.GeoDataFrame, schools: gpd.GeoDataFrame):
 
 
 
-def match_trip1(trips: gpd.GeoDataFrame, schools: gpd.GeoDataFrame, routes: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+def match_trip(trips: gpd.GeoDataFrame, schools: gpd.GeoDataFrame, routes: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     """
     trips:
         ['id', 'gps', 'zeit_start', 'zeit_ziel', 'strassentyp',

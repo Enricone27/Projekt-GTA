@@ -13,7 +13,7 @@ from flask_cors import CORS, cross_origin
 
 #import sonstiges
 from analyse import rating_school, rating_trip
-from data_processing import match_trip1, match_school
+from data_processing import match_trip, match_school
 import sql
 
 app = Flask(__name__)
@@ -34,7 +34,7 @@ def trip():
     velovorzugslinien  = gdfs["velovorzugslinien"]
     
     #data processing und analyse
-    matched_trips = match_trip1(trajektorien, schule, velovorzugslinien)
+    matched_trips = match_trip(trajektorien, schule, velovorzugslinien)
     rated_trips = rating_trip(matched_trips)
 
     #gdf in die db schreiben
