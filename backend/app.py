@@ -12,7 +12,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 
 #import sonstiges
-from analüse import rating_school, rating_trip
+from analyse import rating_school, rating_trip
 from data_processing import match_trip1, match_school
 import sql
 
